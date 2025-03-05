@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Corte de Imagen</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            padding: 20px;
+            background-color: #f0f2f5;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        .tool-container {
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        }
+        .tool-heading {
+            display: flex;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        .tool-heading span {
+            font-weight: bold;
+            margin-left: 8px;
+        }
+        .tool-icon {
+            color: #a855f7;
+            font-size: 18px;
+            margin-right: 8px;
+        }
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 44px;
+            height: 22px;
+            margin-right: 10px;
+        }
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 22px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 2px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + .slider {
+            background-color: #a855f7;
+        }
+        input:checked + .slider:before {
+            transform: translateX(21px);
+        }
+        .label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 8px;
+        }
+        .select {
+            width: 100%;
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #d9d9d9;
+            margin-bottom: 16px;
+        }
+        .tip {
+            font-size: 12px;
+            color: #666;
+            margin-top: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="tool-container">
+        <div class="tool-heading">
+            <span class="tool-icon">✂️</span>
+            <span>Corte de imagen</span>
+        </div>
+        <div>
+            <label class="switch">
+                <input type="checkbox" checked>
+                <span class="slider"></span>
+            </label>
+            <span>Activado</span>
+        </div>
+        <div style="margin-top: 16px;">
+            <label class="label">Tipo de recorte</label>
+            <select class="select">
+                <option selected>Cuadrado (1:1)</option>
+                <option>Horizontal (16:9)</option>
+                <option>Horizontal (4:3)</option>
+                <option>Vertical (9:16)</option>
+                <option>Vertical (3:4)</option>
+            </select>
+        </div>
+        <div>
+            <label class="label">Posición de recorte</label>
+            <select class="select">
+                <option>Centro (default)</option>
+                <option selected>Superior central</option>
+                <option>Superior izquierda</option>
+                <option>Superior derecha</option>
+                <option>Centro izquierda</option>
+                <option>Centro derecha</option>
+                <option>Inferior izquierda</option>
+                <option>Inferior central</option>
+                <option>Inferior derecha</option>
+            </select>
+        </div>
+        <div class="tip">Define el tamaño y la posición del recorte</div>
+    </div>
+</body>
+</html>

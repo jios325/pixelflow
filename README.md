@@ -1,6 +1,58 @@
+## Herramientas principales
+
+PixelFlow ofrece un conjunto integral de herramientas para el procesamiento de imágenes, diseñadas para ser intuitivas y potentes al mismo tiempo. Todas las herramientas se aplican en un orden específico (1. Optimización, 2. Redimensionamiento, 3. Recorte, 4. Formato) para garantizar resultados óptimos.
+
+### Formato de salida
+
+Permite seleccionar el formato al que se convertirán las imágenes procesadas:
+
+![Herramienta de formato](docs/formato_salida.png)
+
+- **Original**: Mantiene el formato original de cada imagen
+- **JPG**: Ideal para fotografías y donde no se requiere transparencia
+- **PNG**: Mejor opción para gráficos con transparencia
+- **WEBP**: Formato moderno con mejor compresión que ofrece buena calidad y tamaño reducido
+
+### Redimensión
+
+Permite cambiar el tamaño de todas las imágenes de manera uniforme:
+
+![Herramienta de redimensión](docs/redimension.png)
+
+- **Unidad**: Selecciona entre píxeles (tamaño exacto) o porcentaje (relativo al tamaño original)
+- **Mantener proporción**: Conserva la relación de aspecto original (recomendado para evitar distorsiones)
+- **Base de la medida**: La herramienta utiliza el ancho como referencia cuando se mantiene la proporción
+
+### Corte de imagen
+
+Permite recortar las imágenes según proporciones específicas, desde posiciones determinadas:
+
+![Herramienta de corte](docs/corte_imagen.png)
+
+- **Tipo de recorte**: 
+  - Cuadrado (1:1): Ideal para perfiles, miniaturas y fotografías de producto
+  - Horizontal (16:9): Estándar para vídeo y presentaciones
+  - Horizontal (4:3): Formato clásico para fotografías
+  - Vertical (9:16): Formato para historias de redes sociales
+  - Vertical (3:4): Formato para retratos y publicaciones verticales
+
+- **Posición de recorte**: Define desde dónde se realizará el recorte (centro, esquinas, laterales)
+
 # PixelFlow - Herramienta de Procesamiento de Imágenes
 
 PixelFlow es una aplicación web para procesamiento de imágenes por lotes que permite a los usuarios subir, visualizar, editar y optimizar imágenes a través de una interfaz intuitiva y funcional.
+
+## Vista previa de la aplicación
+
+### Pantalla inicial
+
+![Pantalla inicial](docs/pantalla_inicial.png)
+
+### Interfaz completa con imágenes cargadas
+
+![Interfaz completa](docs/interfaz_completa.png)
+
+Con PixelFlow puedes cargar, procesar y optimizar múltiples imágenes simultáneamente, con herramientas intuitivas de procesamiento y opciones de configuración flexibles.
 
 ## Características
 
