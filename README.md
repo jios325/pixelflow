@@ -1,70 +1,137 @@
-# Getting Started with Create React App
+# PixelFlow - Herramienta de Procesamiento de Imágenes
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+PixelFlow es una aplicación web para procesamiento de imágenes por lotes que permite a los usuarios subir, visualizar, editar y optimizar imágenes a través de una interfaz intuitiva y funcional.
 
-## Available Scripts
+## Características
 
-In the project directory, you can run:
+- **Carga de imágenes**: Arrastra y suelta o selecciona imágenes (hasta 60MB)
+- **Optimización**: Reduce el tamaño de las imágenes manteniendo una buena calidad
+- **Cambio de formato**: Convierte imágenes a JPG, PNG, WEBP o GIF
+- **Redimensionamiento**: Cambia el tamaño de las imágenes especificando dimensiones
+- **Recorte**: Selecciona una zona específica para recortar las imágenes
+- **Renombrado**: Renombra archivos mediante diferentes opciones (secuencial, agregar texto, reemplazar texto)
+- **Descarga**: Descarga imágenes individuales o todas en un archivo ZIP
+- **Personalización de marca**: Agrega tu propio logo y personaliza los colores para adaptarse a la identidad visual de tu empresa
 
-### `npm start`
+## Tecnologías utilizadas
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- React.js
+- Ant Design
+- react-image-file-resizer
+- browser-image-compression
+- pica
+- file-saver
+- jszip
+- localStorage (para persistencia de configuración)
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Instalación
 
-### `npm test`
+1. Clona este repositorio:
+```
+git clone https://github.com/tu-usuario/pixelflow.git
+cd pixelflow
+```
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+2. Instala las dependencias:
+```
+npm install
+```
 
-### `npm run build`
+3. Inicia la aplicación en modo desarrollo:
+```
+npm start
+```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+La aplicación estará disponible en [http://localhost:3000](http://localhost:3000).
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## Uso
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+1. Arrastra y suelta imágenes o haz clic en el área de carga para seleccionarlas
+2. Utiliza las herramientas del panel izquierdo para:
+   - Activar/desactivar optimización
+   - Cambiar formato de archivo
+   - Redimensionar imágenes
+   - Recortar imágenes
+   - Renombrar archivos
+3. Visualiza las imágenes procesadas en el panel derecho
+4. Descarga las imágenes procesadas individualmente o todas juntas
+5. Personaliza la apariencia usando el botón "Configurar" en la cabecera
 
-### `npm run eject`
+## Personalización de marca
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+PixelFlow permite personalizar la apariencia de la aplicación para adaptarse a la identidad visual de tu empresa:
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### Personalización de logo
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+1. Haz clic en el botón "Configurar" en la esquina superior derecha
+2. En la sección "Logo y nombre" podrás:
+   - Cambiar el nombre de la aplicación
+   - Cargar tu propio logo (formatos recomendados: PNG o SVG con fondo transparente)
+3. Verás una vista previa en tiempo real en la parte superior del panel
+4. Haz clic en "Guardar configuración" para aplicar los cambios
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+### Personalización de colores
 
-## Learn More
+1. En el mismo panel de configuración, encontrarás la sección "Paleta de colores"
+2. Puedes personalizar:
+   - **Color primario**: Usado en botones, switches y elementos interactivos
+   - **Color secundario**: Usado para acentos y detalles visuales
+   - **Color de fondo**: Fondo general de la aplicación
+3. Haz clic en cada selector de color para abrir una paleta donde puedes:
+   - Seleccionar un color usando el selector visual
+   - Introducir un código hexadecimal para coincidencia exacta con tu marca
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### Persistencia de la configuración
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+- La configuración personalizada se guarda automáticamente en el navegador
+- Se mantendrá entre sesiones hasta que borres los datos del navegador
+- Si necesitas restablecer la configuración por defecto, usa el botón "Restablecer"
 
-### Code Splitting
+## Estructura del proyecto
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+```
+src/
+├── components/
+│   ├── Common/          # Componentes comunes y de marca
+│   │   ├── BrandLogo.jsx
+│   │   ├── BrandConfigPanel.jsx
+│   │   └── ColorPicker.jsx
+│   ├── ImageUploader/
+│   │   ├── UploadArea.jsx
+│   │   └── UploadedImagesList.jsx
+│   ├── ImageProcessor/
+│   │   ├── ProcessedImagesList.jsx
+│   │   └── ImageItem.jsx
+│   ├── Tools/
+│   │   ├── ToolsPanel.jsx
+│   │   ├── FormatTool.jsx
+│   │   ├── ResizeTool.jsx
+│   │   ├── CropTool.jsx
+│   │   └── OptimizeTool.jsx
+│   ├── RenameTools/
+│   │   ├── RenamePanel.jsx
+│   │   ├── SequentialRename.jsx
+│   │   ├── AddTextRename.jsx
+│   │   └── ReplaceTextRename.jsx
+│   └── DownloadButton.jsx
+├── config/
+│   └── brandConfig.js     # Configuración por defecto de marca
+├── context/
+│   └── BrandContext.jsx   # Contexto para gestionar configuración de marca
+├── hooks/
+│   ├── useImageProcessor.js
+│   ├── useImageUpload.js
+│   └── useImageRename.js
+├── utils/
+│   ├── imageProcessing.js
+│   └── fileHelpers.js
+└── App.jsx
+```
 
-### Analyzing the Bundle Size
+## Licencia
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+Este proyecto está licenciado bajo la Licencia MIT - ver el archivo LICENSE para más detalles.
 
-### Making a Progressive Web App
+## Contacto
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Si tienes alguna pregunta o sugerencia, no dudes en contactarme. 
