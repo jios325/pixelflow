@@ -80,7 +80,7 @@ Con PixelFlow puedes cargar, procesar y optimizar múltiples imágenes simultán
 
 1. Clona este repositorio:
 ```
-git clone https://github.com/tu-usuario/pixelflow.git
+git clone https://github.com/jios325/pixelflow.git 
 cd pixelflow
 ```
 
