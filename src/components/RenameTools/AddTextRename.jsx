@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Form, Input, Select, Space } from 'antd';
 
 const { Option } = Select;
@@ -48,6 +49,15 @@ const AddTextRename = ({ addTextSettings, updateAddTextSettings, disabled }) => 
       </Form>
     </div>
   );
+};
+
+AddTextRename.propTypes = {
+  addTextSettings: PropTypes.shape({
+    text: PropTypes.string,
+    position: PropTypes.oneOf(['prefix', 'suffix']),
+  }).isRequired,
+  updateAddTextSettings: PropTypes.func.isRequired,
+  disabled: PropTypes.bool,
 };
 
 export default AddTextRename;

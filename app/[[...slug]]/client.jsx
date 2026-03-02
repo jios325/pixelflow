@@ -1,9 +1,9 @@
 'use client';
 
 import dynamic from 'next/dynamic';
-import { BrandProvider } from '../../src/context/BrandContext';
+import { BrandProvider } from '@/context/BrandContext';
 
-const App = dynamic(() => import('../../src/App.jsx'), { ssr: false });
+const App = dynamic(() => import('@/App.jsx'), { ssr: false });
 
 export default function Client() {
   return (

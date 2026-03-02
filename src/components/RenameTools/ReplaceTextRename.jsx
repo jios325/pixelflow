@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Form, Input, Space } from 'antd';
 
 const ReplaceTextRename = ({ replaceTextSettings, updateReplaceTextSettings, disabled }) => {
@@ -35,6 +36,15 @@ const ReplaceTextRename = ({ replaceTextSettings, updateReplaceTextSettings, dis
       </Form>
     </div>
   );
+};
+
+ReplaceTextRename.propTypes = {
+  replaceTextSettings: PropTypes.shape({
+    search: PropTypes.string,
+    replace: PropTypes.string,
+  }).isRequired,
+  updateReplaceTextSettings: PropTypes.func.isRequired,
+  disabled: PropTypes.bool,
 };
 
 export default ReplaceTextRename;

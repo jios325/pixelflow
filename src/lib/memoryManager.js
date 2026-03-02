@@ -2,6 +2,17 @@
  * Utilidades para gestionar la memoria cuando se trabaja con imágenes grandes
  * Este módulo ayuda a evitar problemas de memoria con archivos grandes
  */
+import {
+  MEMORY_MAX_WIDTH,
+  MEMORY_MAX_HEIGHT,
+  MEMORY_COMPRESSION_QUALITY,
+  BYTES_PER_PIXEL_RGBA,
+  ESTIMATED_COMPRESSION_RATIO,
+  PREVIEW_SIZE,
+  LOW_RES_PREVIEW_QUALITY,
+  IMAGE_CHUNK_SIZE,
+} from '@/lib/constants';
+import logger from './logger';
 
 /**
  * Libera memoria de las URLs de objeto que ya no se necesitan
@@ -15,7 +26,7 @@ export const releaseObjectURLs = (urls = []) => {
       try {
         URL.revokeObjectURL(url);
       } catch (error) {
-        console.error('Error al liberar URL de objeto:', error);
+        logger.error('Error al liberar URL de objeto:', error);
       }
     }
   });
@@ -31,7 +42,7 @@ export const forceGarbageCollection = () => {
     try {
       window.gc();
     } catch (e) {
-      console.log('No se pudo forzar la recolección de basura');
+      logger.log('No se pudo forzar la recolección de basura');
     }
   }
 };
@@ -51,8 +62,8 @@ export const compressImageForMemory = async (file, options = {}) => {
 
       img.onload = () => {
         // Determinar dimensiones máximas para mantener en memoria
-        const MAX_WIDTH = options.maxWidth || 1920;
-        const MAX_HEIGHT = options.maxHeight || 1080;
+        const MAX_WIDTH = options.maxWidth || MEMORY_MAX_WIDTH;
+        const MAX_HEIGHT = options.maxHeight || MEMORY_MAX_HEIGHT;
 
         let width = img.width;
         let height = img.height;
@@ -87,7 +98,7 @@ export const compressImageForMemory = async (file, options = {}) => {
             resolve(blob);
           },
           file.type,
-          options.quality || 0.85
+          options.quality || MEMORY_COMPRESSION_QUALITY
         );
       };
 
@@ -117,13 +128,12 @@ export const estimateImageMemoryUsage = (file, imageWidth = 0, imageHeight = 0) 
   // Si tenemos dimensiones, calcular basado en ellas
   if (imageWidth > 0 && imageHeight > 0) {
     // Cada píxel necesita 4 bytes (RGBA)
-    return imageWidth * imageHeight * 4;
+    return imageWidth * imageHeight * BYTES_PER_PIXEL_RGBA;
   }
 
   // Si no, hacer una estimación basada en el tamaño del archivo
   // Las imágenes no comprimidas pueden ser 10-20 veces más grandes en memoria
-  const compressionRatio = 10;
-  return file.size * compressionRatio;
+  return file.size * ESTIMATED_COMPRESSION_RATIO;
 };
 
 /**
@@ -139,8 +149,6 @@ export const createLowResPreview = (file) => {
       const img = new Image();
 
       img.onload = () => {
-        // Determinar tamaño de vista previa
-        const PREVIEW_SIZE = 300;
         let width, height;
 
         if (img.width > img.height) {
@@ -161,7 +169,7 @@ export const createLowResPreview = (file) => {
         ctx.drawImage(img, 0, 0, width, height);
 
         // Convertir a URL de datos para la vista previa
-        const dataUrl = canvas.toDataURL('image/jpeg', 0.5);
+        const dataUrl = canvas.toDataURL('image/jpeg', LOW_RES_PREVIEW_QUALITY);
 
         // Liberar memoria
         URL.revokeObjectURL(img.src);
@@ -192,7 +200,7 @@ export const createLowResPreview = (file) => {
  * @param {number} chunkSize - Tamaño máximo de cada fragmento en píxeles
  * @returns {Array<{canvas: HTMLCanvasElement, x: number, y: number, width: number, height: number}>} - Array de fragmentos
  */
-export const splitImageIntoChunks = (image, chunkSize = 1024) => {
+export const splitImageIntoChunks = (image, chunkSize = IMAGE_CHUNK_SIZE) => {
   const chunks = [];
   const width = image.width;
   const height = image.height;

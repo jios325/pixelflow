@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import {
   Card,
   Form,
@@ -13,11 +14,11 @@ import {
   message,
 } from 'antd';
 import { UploadOutlined, SettingOutlined, SaveOutlined, UndoOutlined } from '@ant-design/icons';
-import brandConfig from '../../config/brandConfig';
-import ColorPicker from './ColorPicker';
-import BrandLogo from './BrandLogo';
+import brandConfig from '@/config/brandConfig';
+import ColorPicker from '@/components/Common/ColorPicker';
+import BrandLogo from '@/components/Common/BrandLogo';
 
-const { Text, Title } = Typography;
+const { Title } = Typography;
 
 /**
  * Panel de configuración de marca y colores
@@ -25,7 +26,7 @@ const { Text, Title } = Typography;
  * @param {Function} props.onSave - Función llamada al guardar la configuración
  * @param {Function} props.onClose - Función llamada al cerrar el panel
  */
-const BrandConfigPanel = ({ onSave, onClose }) => {
+const BrandConfigPanel = ({ onSave }) => {
   // Estado para la configuración actual
   const [config, setConfig] = useState({ ...brandConfig });
   // Estado para la vista previa del logo
@@ -210,6 +211,10 @@ const BrandConfigPanel = ({ onSave, onClose }) => {
       </Form>
     </Card>
   );
+};
+
+BrandConfigPanel.propTypes = {
+  onSave: PropTypes.func,
 };
 
 export default BrandConfigPanel;

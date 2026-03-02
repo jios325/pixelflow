@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Popover, Button, Input, Typography, Space } from 'antd';
 import { BgColorsOutlined } from '@ant-design/icons';
 
@@ -70,5 +71,11 @@ function getContrastColor(hexColor) {
   // Determinar color de texto basado en luminancia
   return luminance > 0.5 ? '#000000' : '#ffffff';
 }
+
+ColorPicker.propTypes = {
+  value: PropTypes.string.isRequired,
+  onChange: PropTypes.func.isRequired,
+  label: PropTypes.string.isRequired,
+};
 
 export default ColorPicker;

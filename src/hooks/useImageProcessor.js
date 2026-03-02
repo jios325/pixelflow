@@ -5,8 +5,18 @@ import {
   convertImageFormat,
   cropImage,
   calculatePercentageDimensions,
-} from '../utils/imageProcessing';
-import { getBaseName, getFileExtension, formatFileSize } from '../utils/fileValidation';
+} from '@/lib/imageProcessing';
+import { getBaseName, getFileExtension, formatFileSize } from '@/lib/fileValidation';
+import {
+  PROCESSING_BATCH_SIZE,
+  OPTIMIZE_MAX_SIZE_MB,
+  OPTIMIZE_MAX_DIMENSION,
+  DEFAULT_RESIZE_WIDTH,
+  DEFAULT_RESIZE_HEIGHT,
+  DEFAULT_CROP_WIDTH,
+  DEFAULT_CROP_HEIGHT,
+} from '@/lib/constants';
+import logger from '@/lib/logger';
 
 /**
  * Hook personalizado para procesar imágenes
@@ -27,16 +37,16 @@ const useImageProcessor = (uploadedImages) => {
     format: 'original', // original, jpg, png, webp
     resize: {
       enabled: false,
-      width: 800,
-      height: 600,
+      width: DEFAULT_RESIZE_WIDTH,
+      height: DEFAULT_RESIZE_HEIGHT,
       maintainAspectRatio: true,
       unit: 'px', // 'px' o '%'
     },
     crop: {
       enabled: false,
       cropType: 'square',
-      width: 1000,
-      height: 1000,
+      width: DEFAULT_CROP_WIDTH,
+      height: DEFAULT_CROP_HEIGHT,
       position: 'center',
     },
   });
@@ -51,100 +61,6 @@ const useImageProcessor = (uploadedImages) => {
     }
   }, [processingSettings.resize.width, processingSettings.resize.height]);
 
-  // Función para crear un archivo con el formato correcto
-  const createFileWithFormat = async (file, format) => {
-    if (!file || format === 'original') return file;
-
-    // Determinar el tipo MIME para el formato solicitado
-    let mimeType;
-    let extension;
-
-    switch (format.toLowerCase()) {
-      case 'jpg':
-      case 'jpeg':
-        mimeType = 'image/jpeg';
-        extension = 'jpg';
-        break;
-      case 'png':
-        mimeType = 'image/png';
-        extension = 'png';
-        break;
-      case 'webp':
-        mimeType = 'image/webp';
-        extension = 'webp';
-        break;
-      case 'gif':
-        mimeType = 'image/gif';
-        extension = 'gif';
-        break;
-      default:
-        mimeType = `image/${format}`;
-        extension = format;
-    }
-
-    try {
-      // Crear un canvas para hacer la conversión
-      const img = new Image();
-
-      // Cargar la imagen
-      await new Promise((resolve, reject) => {
-        img.onload = resolve;
-        img.onerror = reject;
-
-        // Crear objeto URL para la imagen
-        if (file instanceof File || file instanceof Blob) {
-          const reader = new FileReader();
-          reader.onload = (e) => {
-            img.src = e.target.result;
-          };
-          reader.onerror = reject;
-          reader.readAsDataURL(file);
-        } else if (typeof file === 'string') {
-          img.src = file;
-        } else {
-          reject(new Error('Formato de archivo no soportado'));
-        }
-      });
-
-      // Crear un canvas con las dimensiones de la imagen
-      const canvas = document.createElement('canvas');
-      canvas.width = img.width;
-      canvas.height = img.height;
-      const ctx = canvas.getContext('2d');
-
-      // Fondo blanco para JPEG (que no soporta transparencia)
-      if (mimeType === 'image/jpeg') {
-        ctx.fillStyle = '#FFFFFF';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-      }
-
-      // Dibujar la imagen en el canvas
-      ctx.drawImage(img, 0, 0);
-
-      // Convertir el canvas a un Blob con el formato deseado
-      const blob = await new Promise((resolve) => {
-        canvas.toBlob(resolve, mimeType, 0.92);
-      });
-
-      if (!blob) {
-        throw new Error(`No se pudo convertir al formato ${format}`);
-      }
-
-      // Crear un File con el blob y el tipo MIME adecuado
-      const timestamp = Date.now();
-      const newFile = new File([blob], `image_${timestamp}.${extension}`, {
-        type: mimeType,
-        lastModified: timestamp,
-      });
-
-      console.log(`Conversión exitosa a ${format.toUpperCase()}:`, newFile);
-      return newFile;
-    } catch (error) {
-      console.error(`Error al convertir a ${format}:`, error);
-      return file; // Devolver archivo original en caso de error
-    }
-  };
-
   // Función para procesar imágenes bajo demanda (cuando el usuario haga clic en un botón)
   const processImages = useCallback(async () => {
     if (!uploadedImages || uploadedImages.length === 0) {
@@ -156,7 +72,7 @@ const useImageProcessor = (uploadedImages) => {
     setProcessing(true);
 
     // Procesar imágenes en lotes para mejorar rendimiento con archivos grandes
-    const BATCH_SIZE = 3; // Procesar 3 imágenes a la vez para evitar bloquear el navegador
+    const BATCH_SIZE = PROCESSING_BATCH_SIZE;
     const processedResults = [];
 
     try {
@@ -188,12 +104,12 @@ const useImageProcessor = (uploadedImages) => {
 
                   if (dimensions.width && dimensions.height) {
                     resizeDimensions = dimensions;
-                    console.log(
+                    logger.log(
                       `Redimensionando al ${percentWidth}% - Ancho: ${dimensions.width}px, Alto: ${dimensions.height}px`
                     );
                   }
                 } catch (error) {
-                  console.error('Error al calcular dimensiones en porcentaje:', error);
+                  logger.error('Error al calcular dimensiones en porcentaje:', error);
                 }
               }
 
@@ -202,12 +118,12 @@ const useImageProcessor = (uploadedImages) => {
               // 1. Primero aplicar optimización si está habilitada (reduce el tamaño del archivo)
               if (processingSettings.optimize) {
                 processedFile = await optimizeImage(processedFile, {
-                  maxSizeMB: 1,
-                  maxWidthOrHeight: 1920,
+                  maxSizeMB: OPTIMIZE_MAX_SIZE_MB,
+                  maxWidthOrHeight: OPTIMIZE_MAX_DIMENSION,
                   useWebWorker: true,
                 });
                 fileChanged = true;
-                console.log('Imagen optimizada');
+                logger.log('Imagen optimizada');
               }
 
               // 2. Segundo: aplicar redimensionamiento si está habilitado
@@ -219,7 +135,7 @@ const useImageProcessor = (uploadedImages) => {
                   processingSettings.resize.maintainAspectRatio
                 );
                 fileChanged = true;
-                console.log(
+                logger.log(
                   `Imagen redimensionada a ${resizeDimensions.width}x${resizeDimensions.height}`
                 );
 
@@ -236,18 +152,18 @@ const useImageProcessor = (uploadedImages) => {
                     reader.onerror = reject;
                     reader.readAsDataURL(processedFile);
                   });
-                  console.log(
+                  logger.log(
                     `Dimensiones reales después del redimensionamiento: ${img.width}x${img.height}`
                   );
                 } catch (err) {
-                  console.error('Error al verificar dimensiones:', err);
+                  logger.error('Error al verificar dimensiones:', err);
                 }
               }
 
               // 3. Tercero: aplicar recorte si está habilitado (siempre después del redimensionamiento)
               if (processingSettings.crop.enabled) {
                 // Obtener las dimensiones de la imagen antes del recorte
-                let imageDimensions;
+                let _imageDimensions;
                 try {
                   const img = new Image();
                   const reader = new FileReader();
@@ -260,18 +176,18 @@ const useImageProcessor = (uploadedImages) => {
                     reader.onerror = reject;
                     reader.readAsDataURL(processedFile);
                   });
-                  imageDimensions = { width: img.width, height: img.height };
-                  console.log(`Dimensiones antes del recorte: ${img.width}x${img.height}`);
+                  _imageDimensions = { width: img.width, height: img.height };
+                  logger.log(`Dimensiones antes del recorte: ${img.width}x${img.height}`);
                 } catch (err) {
-                  console.error('Error al obtener dimensiones para recorte:', err);
-                  imageDimensions = { width: 0, height: 0 };
+                  logger.error('Error al obtener dimensiones para recorte:', err);
+                  _imageDimensions = { width: 0, height: 0 };
                 }
 
                 // Usar las dimensiones exactas del tipo de recorte
                 const cropWidth = processingSettings.crop.width;
                 const cropHeight = processingSettings.crop.height;
 
-                console.log(
+                logger.log(
                   `Aplicando recorte: ${cropWidth}x${cropHeight} desde posición ${processingSettings.crop.position}`
                 );
 
@@ -282,25 +198,25 @@ const useImageProcessor = (uploadedImages) => {
                   processingSettings.crop.position || 'center'
                 );
                 fileChanged = true;
-                console.log(`Imagen recortada completada: ${cropWidth}x${cropHeight}`);
+                logger.log(`Imagen recortada completada: ${cropWidth}x${cropHeight}`);
               }
 
               // 4. Por último: convertir formato si no es 'original'
               if (processingSettings.format !== 'original') {
-                console.log(`Aplicando conversión de formato a: ${processingSettings.format}`);
+                logger.log(`Aplicando conversión de formato a: ${processingSettings.format}`);
                 try {
                   const prevSize = processedFile.size;
                   processedFile = await convertImageFormat(
                     processedFile,
                     processingSettings.format
                   );
-                  console.log(
+                  logger.log(
                     `Conversión completada. Tamaño anterior: ${prevSize}, Nuevo tamaño: ${processedFile.size}`
                   );
-                  console.log(`Tipo MIME resultante: ${processedFile.type}`);
+                  logger.log(`Tipo MIME resultante: ${processedFile.type}`);
                   fileChanged = true;
                 } catch (error) {
-                  console.error(
+                  logger.error(
                     `Error en la conversión de formato a ${processingSettings.format}:`,
                     error
                   );
@@ -336,7 +252,7 @@ const useImageProcessor = (uploadedImages) => {
               const baseName = getBaseName(img.name);
               const newName = `${baseName}.${newExtension}`;
 
-              console.log(`Nombre final: ${newName}, Tipo MIME: ${processedFile.type}`);
+              logger.log(`Nombre final: ${newName}, Tipo MIME: ${processedFile.type}`);
 
               // Crear objeto de imagen procesada
               return {
@@ -357,7 +273,7 @@ const useImageProcessor = (uploadedImages) => {
                 },
               };
             } catch (error) {
-              console.error(`Error al procesar imagen ${img.name}:`, error);
+              logger.error(`Error al procesar imagen ${img.name}:`, error);
               // Si hay error, devolver la imagen sin procesar pero marcarla como procesada
               return {
                 ...img,
@@ -381,7 +297,7 @@ const useImageProcessor = (uploadedImages) => {
       // Actualizar estado con todas las imágenes procesadas (reemplazando, no añadiendo)
       setProcessedImages(processedResults);
     } catch (error) {
-      console.error('Error al procesar imágenes:', error);
+      logger.error('Error al procesar imágenes:', error);
     } finally {
       setProcessing(false);
     }
@@ -436,7 +352,7 @@ const useImageProcessor = (uploadedImages) => {
       processingSettings.resize.maintainAspectRatio &&
       (settings.hasOwnProperty('width') || settings.hasOwnProperty('height'))
     ) {
-      const currentSettings = processingSettings.resize;
+      const _currentSettings = processingSettings.resize;
       // Usar la relación de aspecto guardada en el estado
       const currentAspectRatio = aspectRatio;
 

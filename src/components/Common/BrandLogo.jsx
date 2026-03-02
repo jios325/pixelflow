@@ -1,7 +1,8 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Typography } from 'antd';
 import { PictureOutlined } from '@ant-design/icons';
-import brandConfig from '../../config/brandConfig';
+import brandConfig from '@/config/brandConfig';
 
 const { Title } = Typography;
 
@@ -82,6 +83,14 @@ const BrandLogo = ({ size = 'default' }) => {
       </Title>
     </div>
   );
+};
+
+BrandLogo.propTypes = {
+  size: PropTypes.oneOf(['small', 'default', 'large']),
+};
+
+BrandLogo.defaultProps = {
+  size: 'default',
 };
 
 export default BrandLogo;

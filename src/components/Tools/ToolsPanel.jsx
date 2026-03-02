@@ -1,9 +1,10 @@
 import React from 'react';
-import { Card, Form, Switch, Select, Space, Divider, Typography } from 'antd';
+import PropTypes from 'prop-types';
+import { Card, Form, Switch, Select, Divider, Typography } from 'antd';
 import { ToolOutlined } from '@ant-design/icons';
-import { useBrand } from '../../context/BrandContext';
-import ResizeTool from './ResizeTool';
-import CropTool from './CropTool';
+import { useBrand } from '@/context/BrandContext';
+import ResizeTool from '@/components/Tools/ResizeTool';
+import CropTool from '@/components/Tools/CropTool';
 
 const { Option } = Select;
 const { Text } = Typography;
@@ -107,6 +108,35 @@ const ToolsPanel = ({
       </Form>
     </Card>
   );
+};
+
+ToolsPanel.propTypes = {
+  processingSettings: PropTypes.shape({
+    optimize: PropTypes.bool,
+    format: PropTypes.string,
+    resize: PropTypes.shape({
+      enabled: PropTypes.bool,
+      width: PropTypes.number,
+      unit: PropTypes.oneOf(['px', '%']),
+      maintainAspectRatio: PropTypes.bool,
+    }),
+    crop: PropTypes.shape({
+      enabled: PropTypes.bool,
+      cropType: PropTypes.string,
+      position: PropTypes.string,
+      width: PropTypes.number,
+      height: PropTypes.number,
+    }),
+  }).isRequired,
+  toggleOptimize: PropTypes.func.isRequired,
+  changeFormat: PropTypes.func.isRequired,
+  updateResizeSettings: PropTypes.func.isRequired,
+  updateCropSettings: PropTypes.func.isRequired,
+  disabled: PropTypes.bool,
+};
+
+ToolsPanel.defaultProps = {
+  disabled: false,
 };
 
 export default ToolsPanel;

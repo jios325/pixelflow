@@ -1,25 +1,24 @@
 import React, { useState } from 'react';
-import { Layout, Row, Col, Card, Typography, ConfigProvider, Button, Drawer } from 'antd';
-import { PictureOutlined, FileImageOutlined, SettingOutlined } from '@ant-design/icons';
+import { Layout, Row, Col, Card, ConfigProvider, Button, Drawer } from 'antd';
+import { FileImageOutlined, SettingOutlined } from '@ant-design/icons';
 
 // Componentes
-import UploadArea from './components/ImageUploader/UploadArea';
-import UploadedImagesList from './components/ImageUploader/UploadedImagesList';
-import ProcessedImagesList from './components/ImageProcessor/ProcessedImagesList';
-import ToolsPanel from './components/Tools/ToolsPanel';
-import RenamePanel from './components/RenameTools/RenamePanel';
-import DownloadButton from './components/DownloadButton';
-import BrandConfigPanel from './components/Common/BrandConfigPanel';
-import BrandLogo from './components/Common/BrandLogo';
+import UploadArea from '@/components/ImageUploader/UploadArea';
+import UploadedImagesList from '@/components/ImageUploader/UploadedImagesList';
+import ProcessedImagesList from '@/components/ImageProcessor/ProcessedImagesList';
+import ToolsPanel from '@/components/Tools/ToolsPanel';
+import RenamePanel from '@/components/RenameTools/RenamePanel';
+import DownloadButton from '@/components/DownloadButton';
+import BrandConfigPanel from '@/components/Common/BrandConfigPanel';
+import BrandLogo from '@/components/Common/BrandLogo';
 
 // Hooks
-import useImageUpload from './hooks/useImageUpload';
-import useImageProcessor from './hooks/useImageProcessor';
-import useImageRename from './hooks/useImageRename';
-import { useBrand } from './context/BrandContext';
+import useImageUpload from '@/hooks/useImageUpload';
+import useImageProcessor from '@/hooks/useImageProcessor';
+import useImageRename from '@/hooks/useImageRename';
+import { useBrand } from '@/context/BrandContext';
 
 const { Header, Content, Footer } = Layout;
-const { Title } = Typography;
 
 function App() {
   // Estado para el panel de configuración de marca
@@ -29,13 +28,7 @@ function App() {
   const { brandSettings, updateBrandSettings } = useBrand();
 
   // Estado de carga de imágenes
-  const {
-    uploadedImages,
-    loading: uploadLoading,
-    handleUpload,
-    removeImage,
-    clearImages,
-  } = useImageUpload();
+  const { uploadedImages, loading: uploadLoading, handleUpload, removeImage } = useImageUpload();
 
   // Estado de procesamiento de imágenes
   const {

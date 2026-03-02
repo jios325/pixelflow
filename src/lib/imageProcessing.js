@@ -1,5 +1,14 @@
 import imageCompression from 'browser-image-compression';
 import Resizer from 'react-image-file-resizer';
+import {
+  DEFAULT_RESIZE_WIDTH,
+  DEFAULT_RESIZE_HEIGHT,
+  OPTIMIZE_MAX_SIZE_MB,
+  OPTIMIZE_MAX_DIMENSION,
+  FORMAT_CONVERSION_QUALITY,
+  RESIZE_QUALITY,
+} from '@/lib/constants';
+import logger from './logger';
 
 /**
  * Calcula las dimensiones en píxeles basado en un porcentaje del tamaño original
@@ -51,9 +60,9 @@ export const calculatePercentageDimensions = async (
       originalHeight: img.height,
     };
   } catch (error) {
-    console.error('Error al calcular dimensiones por porcentaje:', error);
+    logger.error('Error al calcular dimensiones por porcentaje:', error);
     // Devolver valores predeterminados en caso de error
-    return { width: 800, height: 600 };
+    return { width: DEFAULT_RESIZE_WIDTH, height: DEFAULT_RESIZE_HEIGHT };
   }
 };
 
@@ -64,7 +73,7 @@ export const calculatePercentageDimensions = async (
  * @param {number} quality - Calidad de compresión (0-1)
  * @returns {Promise<Blob>} - Blob de la imagen convertida
  */
-const createConvertPromise = (img, format, quality = 0.92) => {
+const createConvertPromise = (img, format, quality = FORMAT_CONVERSION_QUALITY) => {
   return new Promise((resolve, reject) => {
     try {
       // Crear canvas y dibujar la imagen
@@ -87,7 +96,7 @@ const createConvertPromise = (img, format, quality = 0.92) => {
         canvas.toBlob(
           (blob) => {
             if (!blob) {
-              console.error('La conversión a', format, 'falló - no se generó blob');
+              logger.error('La conversión a', format, 'falló - no se generó blob');
               reject(new Error(`No se pudo convertir a ${format}`));
               return;
             }
@@ -108,12 +117,12 @@ const createConvertPromise = (img, format, quality = 0.92) => {
           const blob = new Blob([new Uint8Array(array)], { type: format });
           resolve(blob);
         } catch (e) {
-          console.error('Error en fallback de conversión:', e);
+          logger.error('Error en fallback de conversión:', e);
           reject(e);
         }
       }
     } catch (e) {
-      console.error('Error en createConvertPromise:', e);
+      logger.error('Error en createConvertPromise:', e);
       reject(e);
     }
   });
@@ -127,8 +136,8 @@ const createConvertPromise = (img, format, quality = 0.92) => {
  */
 export const optimizeImage = async (file, options = {}) => {
   const defaultOptions = {
-    maxSizeMB: 1,
-    maxWidthOrHeight: 1920,
+    maxSizeMB: OPTIMIZE_MAX_SIZE_MB,
+    maxWidthOrHeight: OPTIMIZE_MAX_DIMENSION,
     useWebWorker: true,
   };
 
@@ -140,7 +149,7 @@ export const optimizeImage = async (file, options = {}) => {
   try {
     return await imageCompression(file, compressionOptions);
   } catch (error) {
-    console.error('Error al optimizar la imagen:', error);
+    logger.error('Error al optimizar la imagen:', error);
     return file; // Devolver el archivo original en caso de error
   }
 };
@@ -160,7 +169,7 @@ export const resizeImage = (file, width, height, maintainAspectRatio = true) => 
       width,
       height,
       file.type.split('/')[1].toUpperCase(), // Formato (JPEG, PNG, etc.)
-      100, // Calidad
+      RESIZE_QUALITY, // Calidad
       0, // Rotación
       (blob) => {
         resolve(blob);
@@ -185,7 +194,7 @@ export const convertImageFormat = async (file, format) => {
     return file;
   }
 
-  console.log(`Iniciando conversión a formato: ${format.toUpperCase()}`);
+  logger.log(`Iniciando conversión a formato: ${format.toUpperCase()}`);
 
   // Determinar el tipo MIME adecuado para el formato solicitado
   let mimeType;
@@ -213,7 +222,7 @@ export const convertImageFormat = async (file, format) => {
       extension = format;
   }
 
-  console.log(`Usando MIME type: ${mimeType}`);
+  logger.log(`Usando MIME type: ${mimeType}`);
 
   try {
     // Cargar la imagen en un objeto Image
@@ -237,7 +246,7 @@ export const convertImageFormat = async (file, format) => {
     const img = await loadImagePromise;
 
     // Convertir la imagen al formato deseado
-    const blob = await createConvertPromise(img, mimeType, 0.92);
+    const blob = await createConvertPromise(img, mimeType, FORMAT_CONVERSION_QUALITY);
 
     // Crear un nuevo archivo con el tipo MIME correcto
     const timestamp = new Date().getTime();
@@ -246,10 +255,10 @@ export const convertImageFormat = async (file, format) => {
       lastModified: timestamp,
     });
 
-    console.log(`Conversión exitosa a ${format.toUpperCase()}:`, convertedFile);
+    logger.log(`Conversión exitosa a ${format.toUpperCase()}:`, convertedFile);
     return convertedFile;
   } catch (error) {
-    console.error(`Error al convertir a ${format}:`, error);
+    logger.error(`Error al convertir a ${format}:`, error);
     // En caso de error, devolver el archivo original
     return file;
   }
@@ -264,7 +273,7 @@ export const convertImageFormat = async (file, format) => {
  * @returns {Promise<Blob>} - Blob de la imagen recortada
  */
 export const cropImage = async (file, width, height, position = 'center') => {
-  console.log(`Ejecutando cropImage con dimensiones: ${width}x${height}, posición: ${position}`);
+  logger.log(`Ejecutando cropImage con dimensiones: ${width}x${height}, posición: ${position}`);
 
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -274,7 +283,7 @@ export const cropImage = async (file, width, height, position = 'center') => {
 
       img.onload = () => {
         // Registrar las dimensiones reales de la imagen
-        console.log(`Dimensiones reales antes del recorte: ${img.width}x${img.height}`);
+        logger.log(`Dimensiones reales antes del recorte: ${img.width}x${img.height}`);
 
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d');
@@ -306,13 +315,13 @@ export const cropImage = async (file, width, height, position = 'center') => {
           sourceY = Math.max(0, (img.height - height) / 2);
         }
 
-        console.log(`Posición de recorte: ${position}, Coordenadas: (${sourceX}, ${sourceY})`);
+        logger.log(`Posición de recorte: ${position}, Coordenadas: (${sourceX}, ${sourceY})`);
 
         // Asegurarse de que no se salga de los límites de la imagen
         const sourceWidth = Math.min(width, img.width - sourceX);
         const sourceHeight = Math.min(height, img.height - sourceY);
 
-        console.log(`Área de origen para recorte: ${sourceWidth}x${sourceHeight}`);
+        logger.log(`Área de origen para recorte: ${sourceWidth}x${sourceHeight}`);
 
         // Fondo blanco para el canvas
         ctx.fillStyle = '#FFFFFF';
@@ -346,7 +355,7 @@ export const cropImage = async (file, width, height, position = 'center') => {
           destHeight
         );
 
-        console.log(`Recorte completado: ${width}x${height}`);
+        logger.log(`Recorte completado: ${width}x${height}`);
 
         // Convertir a Blob
         canvas.toBlob((blob) => {

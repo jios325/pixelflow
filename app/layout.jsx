@@ -1,4 +1,4 @@
-import '../src/index.css';
+import '@/index.css';
 import 'antd/dist/antd.min.css';
 
 export const metadata = {

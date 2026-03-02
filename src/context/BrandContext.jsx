@@ -1,5 +1,6 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
-import brandConfig from '../config/brandConfig';
+import brandConfig from '@/config/brandConfig';
+import logger from '@/lib/logger';
 
 // Crear contexto para la configuración de marca
 const BrandContext = createContext();
@@ -20,7 +21,7 @@ export const BrandProvider = ({ children }) => {
     try {
       localStorage.setItem('pixelflow_brand_settings', JSON.stringify(newSettings));
     } catch (error) {
-      console.error('Error al guardar configuración de marca:', error);
+      logger.error('Error al guardar configuración de marca:', error);
     }
   };
 
@@ -32,7 +33,7 @@ export const BrandProvider = ({ children }) => {
         setBrandSettings(JSON.parse(savedSettings));
       }
     } catch (error) {
-      console.error('Error al cargar configuración de marca:', error);
+      logger.error('Error al cargar configuración de marca:', error);
     }
   }, []);
 

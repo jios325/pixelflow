@@ -1,7 +1,7 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Row, Col, Card, Typography, Spin, Empty, Tooltip } from 'antd';
-import { FileImageOutlined } from '@ant-design/icons';
-import { formatFileSize, getFileExtension } from '../../utils/fileValidation';
+import { formatFileSize, getFileExtension } from '@/lib/fileValidation';
 
 const { Text } = Typography;
 
@@ -124,6 +124,32 @@ const ProcessedImagesList = ({ images = [], loading = false }) => {
       ))}
     </Row>
   );
+};
+
+ProcessedImagesList.propTypes = {
+  images: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+      name: PropTypes.string,
+      newName: PropTypes.string,
+      size: PropTypes.number,
+      preview: PropTypes.string,
+      processedPreview: PropTypes.string,
+      processedFile: PropTypes.object,
+      formattedProcessedSize: PropTypes.string,
+      fileChanged: PropTypes.bool,
+      optimization: PropTypes.shape({
+        reductionPercent: PropTypes.number,
+        reduction: PropTypes.number,
+      }),
+    })
+  ),
+  loading: PropTypes.bool,
+};
+
+ProcessedImagesList.defaultProps = {
+  images: [],
+  loading: false,
 };
 
 export default ProcessedImagesList;
