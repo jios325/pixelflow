@@ -28,25 +28,20 @@ const UploadedImagesList = ({ images = [], onRemove }) => {
         <List.Item
           key={image.id}
           actions={[
-            <Tooltip title="Eliminar imagen">
-              <Button 
-                icon={<DeleteOutlined />} 
-                danger 
+            <Tooltip key="delete" title="Eliminar imagen">
+              <Button
+                icon={<DeleteOutlined />}
+                danger
                 size="small"
                 onClick={() => onRemove(image.id)}
                 shape="circle"
               />
-            </Tooltip>
+            </Tooltip>,
           ]}
         >
           <List.Item.Meta
             avatar={
-              <Avatar 
-                src={image.preview} 
-                shape="square" 
-                size={40}
-                icon={<FileImageOutlined />}
-              />
+              <Avatar src={image.preview} shape="square" size={40} icon={<FileImageOutlined />} />
             }
             title={
               <Tooltip title={image.name}>
@@ -65,13 +60,13 @@ const UploadedImagesList = ({ images = [], onRemove }) => {
           />
         </List.Item>
       )}
-      style={{ 
-        maxHeight: '300px', 
+      style={{
+        maxHeight: '300px',
         overflowY: 'auto',
-        overflowX: 'hidden'
+        overflowX: 'hidden',
       }}
     />
   );
 };
 
-export default UploadedImagesList; 
+export default UploadedImagesList;

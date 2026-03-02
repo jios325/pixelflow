@@ -14,7 +14,7 @@ const AddTextRename = ({ addTextSettings, updateAddTextSettings, disabled }) => 
 
   const positionOptions = [
     { value: 'prefix', label: 'Al inicio' },
-    { value: 'suffix', label: 'Al final' }
+    { value: 'suffix', label: 'Al final' },
   ];
 
   return (
@@ -37,7 +37,7 @@ const AddTextRename = ({ addTextSettings, updateAddTextSettings, disabled }) => 
               disabled={disabled}
               style={{ width: '120px' }}
             >
-              {positionOptions.map(option => (
+              {positionOptions.map((option) => (
                 <Option key={option.value} value={option.value}>
                   {option.label}
                 </Option>
@@ -50,4 +50,4 @@ const AddTextRename = ({ addTextSettings, updateAddTextSettings, disabled }) => 
   );
 };
 
-export default AddTextRename; 
+export default AddTextRename;

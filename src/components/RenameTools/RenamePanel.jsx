@@ -23,7 +23,7 @@ const RenamePanel = ({
   updateSequentialSettings,
   updateAddTextSettings,
   updateReplaceTextSettings,
-  disabled = false
+  disabled = false,
 }) => {
   // Acceder al contexto de marca
   const { brandSettings } = useBrand();
@@ -64,7 +64,7 @@ const RenamePanel = ({
             </Space>
           </Space>
         );
-      
+
       case 'addText':
         return (
           <Space direction="vertical" style={{ width: '100%' }}>
@@ -88,7 +88,7 @@ const RenamePanel = ({
             </Form.Item>
           </Space>
         );
-      
+
       case 'replaceText':
         return (
           <Space direction="vertical" style={{ width: '100%' }}>
@@ -110,7 +110,7 @@ const RenamePanel = ({
             </Form.Item>
           </Space>
         );
-      
+
       default:
         return null;
     }
@@ -133,7 +133,9 @@ const RenamePanel = ({
             checked={renameSettings.cleanText}
             onChange={toggleCleanText}
             disabled={disabled}
-            style={{ backgroundColor: renameSettings.cleanText ? brandSettings.colors.primary : undefined }}
+            style={{
+              backgroundColor: renameSettings.cleanText ? brandSettings.colors.primary : undefined,
+            }}
           />
           <Text type="secondary" style={{ marginLeft: '8px', fontSize: '12px' }}>
             Elimina caracteres especiales

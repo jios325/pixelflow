@@ -21,40 +21,30 @@ const ColorPicker = ({ value, onChange, label }) => {
     <div style={{ padding: '8px' }}>
       <Space direction="vertical" size="small">
         <Text>{label}</Text>
-        <Input 
+        <Input
           type="color"
           value={value}
           onChange={handleChange}
           style={{ width: 120, cursor: 'pointer' }}
         />
-        <Input 
-          value={value}
-          onChange={handleChange}
-          style={{ width: 120 }}
-          placeholder="#000000"
-        />
+        <Input value={value} onChange={handleChange} style={{ width: 120 }} placeholder="#000000" />
       </Space>
     </div>
   );
 
   return (
-    <Popover 
-      content={content} 
-      trigger="click" 
-      placement="bottomLeft"
-      title={label}
-    >
-      <Button 
+    <Popover content={content} trigger="click" placement="bottomLeft" title={label}>
+      <Button
         type="default"
         icon={<BgColorsOutlined />}
-        style={{ 
+        style={{
           backgroundColor: value,
           borderColor: value,
           color: getContrastColor(value),
           width: '100%',
           display: 'flex',
           alignItems: 'center',
-          justifyContent: 'space-between'
+          justifyContent: 'space-between',
         }}
       >
         {label}
@@ -73,10 +63,10 @@ function getContrastColor(hexColor) {
   const r = parseInt(hexColor.slice(1, 3), 16);
   const g = parseInt(hexColor.slice(3, 5), 16);
   const b = parseInt(hexColor.slice(5, 7), 16);
-  
+
   // Calcular luminancia
   const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
-  
+
   // Determinar color de texto basado en luminancia
   return luminance > 0.5 ? '#000000' : '#ffffff';
 }

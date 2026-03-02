@@ -24,7 +24,7 @@ const ToolsPanel = ({
   changeFormat,
   updateResizeSettings,
   updateCropSettings,
-  disabled = false
+  disabled = false,
 }) => {
   // Acceder al contexto de marca
   const { brandSettings } = useBrand();
@@ -46,9 +46,17 @@ const ToolsPanel = ({
       style={{ borderRadius: brandSettings.theme.borderRadius, marginBottom: '16px' }}
     >
       <Form layout="vertical" disabled={disabled}>
-        <div style={{ marginBottom: '12px', background: '#f0f0f0', padding: '8px', borderRadius: '4px' }}>
+        <div
+          style={{
+            marginBottom: '12px',
+            background: '#f0f0f0',
+            padding: '8px',
+            borderRadius: '4px',
+          }}
+        >
           <Text type="secondary" style={{ fontSize: '12px' }}>
-            <strong>Orden de aplicación:</strong> Las herramientas se aplican en el siguiente orden: 1) Optimización, 2) Redimensionamiento, 3) Recorte, 4) Formato
+            <strong>Orden de aplicación:</strong> Las herramientas se aplican en el siguiente orden:
+            1) Optimización, 2) Redimensionamiento, 3) Recorte, 4) Formato
           </Text>
         </div>
         <Form.Item label="Optimizar imágenes">
@@ -56,7 +64,11 @@ const ToolsPanel = ({
             checked={processingSettings.optimize}
             onChange={toggleOptimize}
             disabled={disabled}
-            style={{ backgroundColor: processingSettings.optimize ? brandSettings.colors.primary : undefined }}
+            style={{
+              backgroundColor: processingSettings.optimize
+                ? brandSettings.colors.primary
+                : undefined,
+            }}
           />
           <Text type="secondary" style={{ marginLeft: '8px', fontSize: '12px' }}>
             Reduce el tamaño de archivo

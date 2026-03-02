@@ -37,4 +37,4 @@ const ReplaceTextRename = ({ replaceTextSettings, updateReplaceTextSettings, dis
   );
 };
 
-export default ReplaceTextRename; 
+export default ReplaceTextRename;

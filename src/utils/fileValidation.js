@@ -17,10 +17,10 @@ export const isImageFile = (file) => {
 export const validateFileSize = (file, maxSizeMB = 60) => {
   const maxSizeBytes = maxSizeMB * 1024 * 1024;
   const isValid = file.size <= maxSizeBytes;
-  
+
   return {
     valid: isValid,
-    message: isValid ? '' : `El archivo excede el tamaño máximo de ${maxSizeMB}MB`
+    message: isValid ? '' : `El archivo excede el tamaño máximo de ${maxSizeMB}MB`,
   };
 };
 
@@ -41,11 +41,11 @@ export const getImagePreview = (file) => {
  */
 export const formatFileSize = (bytes, decimals = 2) => {
   if (bytes === 0) return '0 Bytes';
-  
+
   const k = 1024;
   const sizes = ['Bytes', 'KB', 'MB', 'GB'];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
-  
+
   return parseFloat((bytes / Math.pow(k, i)).toFixed(decimals)) + ' ' + sizes[i];
 };
 
@@ -55,7 +55,7 @@ export const formatFileSize = (bytes, decimals = 2) => {
  * @returns {string} - Extensión del archivo
  */
 export const getFileExtension = (filename) => {
-  return filename.slice((filename.lastIndexOf('.') - 1 >>> 0) + 2);
+  return filename.slice(((filename.lastIndexOf('.') - 1) >>> 0) + 2);
 };
 
 /**
@@ -65,4 +65,4 @@ export const getFileExtension = (filename) => {
  */
 export const getBaseName = (filename) => {
   return filename.replace(/\.[^/.]+$/, '');
-}; 
+};

@@ -12,7 +12,6 @@
     "browser-image-compression": "^2.0.2",
     "file-saver": "^2.0.5",
     "jszip": "^3.10.1",
-    "pica": "^9.0.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-image-file-resizer": "^0.4.8",
@@ -23,12 +22,21 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "lint": "eslint src/ --ext .js,.jsx",
+    "lint:fix": "eslint src/ --ext .js,.jsx --fix",
+    "format": "prettier --write 'src/**/*.{js,jsx,css,json}'",
+    "format:check": "prettier --check 'src/**/*.{js,jsx,css,json}'",
+    "audit:code": "eslint src/ --ext .js,.jsx --format stylish && prettier --check 'src/**/*.{js,jsx,css,json}'",
+    "prepare": "husky"
   },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
+  "lint-staged": {
+    "src/**/*.{js,jsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "src/**/*.{css,json}": [
+      "prettier --write"
     ]
   },
   "browserslist": {
@@ -42,5 +50,11 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "eslint-config-prettier": "^10.1.8",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.3.1",
+    "prettier": "^3.8.1"
   }
 }

@@ -11,11 +11,11 @@ const BrandContext = createContext();
 export const BrandProvider = ({ children }) => {
   // Estado para la configuración de marca
   const [brandSettings, setBrandSettings] = useState(brandConfig);
-  
+
   // Función para actualizar la configuración
   const updateBrandSettings = (newSettings) => {
     setBrandSettings(newSettings);
-    
+
     // En una implementación real, aquí guardaríamos los ajustes en localStorage
     try {
       localStorage.setItem('pixelflow_brand_settings', JSON.stringify(newSettings));
@@ -23,7 +23,7 @@ export const BrandProvider = ({ children }) => {
       console.error('Error al guardar configuración de marca:', error);
     }
   };
-  
+
   // Cargar configuración guardada al iniciar
   useEffect(() => {
     try {
@@ -35,7 +35,7 @@ export const BrandProvider = ({ children }) => {
       console.error('Error al cargar configuración de marca:', error);
     }
   }, []);
-  
+
   return (
     <BrandContext.Provider value={{ brandSettings, updateBrandSettings }}>
       {children}
