@@ -1,11 +1,24 @@
-import React, { useState, useEffect } from 'react';
-import { Card, Form, Input, Upload, Button, Row, Col, Space, Divider, Typography, message } from 'antd';
+import React, { useState } from 'react';
+import PropTypes from 'prop-types';
+import {
+  Card,
+  Form,
+  Input,
+  Upload,
+  Button,
+  Row,
+  Col,
+  Space,
+  Divider,
+  Typography,
+  message,
+} from 'antd';
 import { UploadOutlined, SettingOutlined, SaveOutlined, UndoOutlined } from '@ant-design/icons';
-import brandConfig from '../../config/brandConfig';
-import ColorPicker from './ColorPicker';
-import BrandLogo from './BrandLogo';
+import brandConfig from '@/config/brandConfig';
+import ColorPicker from '@/components/Common/ColorPicker';
+import BrandLogo from '@/components/Common/BrandLogo';
 
-const { Text, Title } = Typography;
+const { Title } = Typography;
 
 /**
  * Panel de configuración de marca y colores
@@ -13,7 +26,7 @@ const { Text, Title } = Typography;
  * @param {Function} props.onSave - Función llamada al guardar la configuración
  * @param {Function} props.onClose - Función llamada al cerrar el panel
  */
-const BrandConfigPanel = ({ onSave, onClose }) => {
+const BrandConfigPanel = ({ onSave }) => {
   // Estado para la configuración actual
   const [config, setConfig] = useState({ ...brandConfig });
   // Estado para la vista previa del logo
@@ -21,20 +34,20 @@ const BrandConfigPanel = ({ onSave, onClose }) => {
 
   // Manejar cambios en los colores
   const handleColorChange = (colorKey, value) => {
-    setConfig(prev => ({
+    setConfig((prev) => ({
       ...prev,
       colors: {
         ...prev.colors,
-        [colorKey]: value
-      }
+        [colorKey]: value,
+      },
     }));
   };
 
   // Manejar cambio en el nombre de la app
   const handleAppNameChange = (e) => {
-    setConfig(prev => ({
+    setConfig((prev) => ({
       ...prev,
-      appName: e.target.value
+      appName: e.target.value,
     }));
   };
 
@@ -50,9 +63,9 @@ const BrandConfigPanel = ({ onSave, onClose }) => {
     const reader = new FileReader();
     reader.onload = () => {
       setLogoPreview(reader.result);
-      setConfig(prev => ({
+      setConfig((prev) => ({
         ...prev,
-        logoUrl: reader.result
+        logoUrl: reader.result,
       }));
     };
     reader.readAsDataURL(file);
@@ -65,7 +78,7 @@ const BrandConfigPanel = ({ onSave, onClose }) => {
   const handleSave = () => {
     // En una aplicación real, aquí guardaríamos la configuración en localStorage o backend
     message.success('Configuración de marca guardada');
-    
+
     // Llamar a la función onSave si está definida
     if (onSave) {
       onSave(config);
@@ -92,13 +105,13 @@ const BrandConfigPanel = ({ onSave, onClose }) => {
     >
       <Form layout="vertical">
         <Title level={5}>Vista previa</Title>
-        <div 
-          style={{ 
-            padding: '16px', 
-            border: '1px solid #eee', 
-            borderRadius: config.theme.borderRadius, 
+        <div
+          style={{
+            padding: '16px',
+            border: '1px solid #eee',
+            borderRadius: config.theme.borderRadius,
             marginBottom: '16px',
-            backgroundColor: config.colors.headerBackground
+            backgroundColor: config.colors.headerBackground,
           }}
         >
           <BrandLogo />
@@ -110,8 +123,8 @@ const BrandConfigPanel = ({ onSave, onClose }) => {
         <Row gutter={[16, 16]}>
           <Col xs={24} sm={12}>
             <Form.Item label="Nombre de la aplicación">
-              <Input 
-                value={config.appName} 
+              <Input
+                value={config.appName}
                 onChange={handleAppNameChange}
                 placeholder="Nombre de la empresa o app"
               />
@@ -132,14 +145,14 @@ const BrandConfigPanel = ({ onSave, onClose }) => {
               </Upload>
               {logoPreview && (
                 <div style={{ marginTop: '8px', textAlign: 'center' }}>
-                  <img 
-                    src={logoPreview} 
-                    alt="Logo preview" 
-                    style={{ 
-                      maxWidth: '100%', 
-                      maxHeight: '80px', 
-                      objectFit: 'contain' 
-                    }} 
+                  <img
+                    src={logoPreview}
+                    alt="Logo preview"
+                    style={{
+                      maxWidth: '100%',
+                      maxHeight: '80px',
+                      objectFit: 'contain',
+                    }}
                   />
                 </div>
               )}
@@ -153,7 +166,7 @@ const BrandConfigPanel = ({ onSave, onClose }) => {
         <Row gutter={[16, 16]}>
           <Col xs={24} sm={8}>
             <Form.Item label="Color primario">
-              <ColorPicker 
+              <ColorPicker
                 value={config.colors.primary}
                 onChange={(value) => handleColorChange('primary', value)}
                 label="Primario"
@@ -162,7 +175,7 @@ const BrandConfigPanel = ({ onSave, onClose }) => {
           </Col>
           <Col xs={24} sm={8}>
             <Form.Item label="Color secundario">
-              <ColorPicker 
+              <ColorPicker
                 value={config.colors.secondary}
                 onChange={(value) => handleColorChange('secondary', value)}
                 label="Secundario"
@@ -171,7 +184,7 @@ const BrandConfigPanel = ({ onSave, onClose }) => {
           </Col>
           <Col xs={24} sm={8}>
             <Form.Item label="Fondo">
-              <ColorPicker 
+              <ColorPicker
                 value={config.colors.background}
                 onChange={(value) => handleColorChange('background', value)}
                 label="Fondo"
@@ -183,15 +196,12 @@ const BrandConfigPanel = ({ onSave, onClose }) => {
         <Divider />
 
         <Space style={{ width: '100%', justifyContent: 'flex-end' }}>
-          <Button 
-            icon={<UndoOutlined />} 
-            onClick={handleReset}
-          >
+          <Button icon={<UndoOutlined />} onClick={handleReset}>
             Restablecer
           </Button>
-          <Button 
-            type="primary" 
-            icon={<SaveOutlined />} 
+          <Button
+            type="primary"
+            icon={<SaveOutlined />}
             onClick={handleSave}
             style={{ backgroundColor: config.colors.primary, borderColor: config.colors.primary }}
           >
@@ -201,6 +211,10 @@ const BrandConfigPanel = ({ onSave, onClose }) => {
       </Form>
     </Card>
   );
+};
+
+BrandConfigPanel.propTypes = {
+  onSave: PropTypes.func,
 };
 
 export default BrandConfigPanel;

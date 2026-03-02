@@ -1,6 +1,8 @@
 import React, { useEffect } from 'react';
+import PropTypes from 'prop-types';
 import { Form, Switch, Typography, Space, Select } from 'antd';
 import { ScissorOutlined } from '@ant-design/icons';
+import logger from '@/lib/logger';
 
 const { Text } = Typography;
 const { Option } = Select;
@@ -12,9 +14,9 @@ const CropTool = ({ cropSettings, updateCropSettings, disabled }) => {
     { value: 'horizontal-16-9', label: 'Horizontal (16:9)' },
     { value: 'horizontal-4-3', label: 'Horizontal (4:3)' },
     { value: 'vertical-9-16', label: 'Vertical (9:16)' },
-    { value: 'vertical-3-4', label: 'Vertical (3:4)' }
+    { value: 'vertical-3-4', label: 'Vertical (3:4)' },
   ];
-  
+
   const cropPositionOptions = [
     { value: 'center', label: 'Centro (default)' },
     { value: 'top-left', label: 'Superior izquierda' },
@@ -24,7 +26,7 @@ const CropTool = ({ cropSettings, updateCropSettings, disabled }) => {
     { value: 'center-right', label: 'Centro derecha' },
     { value: 'bottom-left', label: 'Inferior izquierda' },
     { value: 'bottom-center', label: 'Inferior central' },
-    { value: 'bottom-right', label: 'Inferior derecha' }
+    { value: 'bottom-right', label: 'Inferior derecha' },
   ];
   const handleEnableChange = (checked) => {
     updateCropSettings({ enabled: checked });
@@ -33,9 +35,9 @@ const CropTool = ({ cropSettings, updateCropSettings, disabled }) => {
   // Manejar cambio de tipo de recorte
   const handleCropTypeChange = (value) => {
     let newWidth, newHeight;
-    
+
     // Establecer dimensiones según el tipo seleccionado
-    switch(value) {
+    switch (value) {
       case 'square':
         newWidth = 1000;
         newHeight = 1000;
@@ -60,14 +62,14 @@ const CropTool = ({ cropSettings, updateCropSettings, disabled }) => {
         newWidth = 1000;
         newHeight = 1000;
     }
-    
-    console.log(`Cambiando tipo de recorte a: ${value}, dimensiones: ${newWidth}x${newHeight}`);
-    
+
+    logger.log(`Cambiando tipo de recorte a: ${value}, dimensiones: ${newWidth}x${newHeight}`);
+
     // Actualizamos primero el tipo, luego las dimensiones para asegurar la consistencia
-    updateCropSettings({ 
+    updateCropSettings({
       cropType: value,
       width: newWidth,
-      height: newHeight
+      height: newHeight,
     });
   };
 
@@ -75,21 +77,21 @@ const CropTool = ({ cropSettings, updateCropSettings, disabled }) => {
   const handleCropPositionChange = (value) => {
     updateCropSettings({ position: value });
   };
-  
+
   // Asegurarse de que cropSettings tiene las propiedades necesarias
   useEffect(() => {
     // Si no hay tipo o posición definida, establece valores predeterminados
     if (!cropSettings.cropType || !cropSettings.position) {
       const updates = {};
-      
+
       if (!cropSettings.cropType) {
         updates.cropType = 'square';
       }
-      
+
       if (!cropSettings.position) {
         updates.position = 'center';
       }
-      
+
       if (Object.keys(updates).length > 0) {
         updateCropSettings(updates);
       }
@@ -119,7 +121,7 @@ const CropTool = ({ cropSettings, updateCropSettings, disabled }) => {
             disabled={disabled || !cropSettings.enabled}
             style={{ width: '100%' }}
           >
-            {cropTypeOptions.map(option => (
+            {cropTypeOptions.map((option) => (
               <Option key={option.value} value={option.value}>
                 {option.label}
               </Option>
@@ -134,7 +136,7 @@ const CropTool = ({ cropSettings, updateCropSettings, disabled }) => {
             disabled={disabled || !cropSettings.enabled}
             style={{ width: '100%' }}
           >
-            {cropPositionOptions.map(option => (
+            {cropPositionOptions.map((option) => (
               <Option key={option.value} value={option.value}>
                 {option.label}
               </Option>
@@ -142,7 +144,7 @@ const CropTool = ({ cropSettings, updateCropSettings, disabled }) => {
           </Select>
         </Form.Item>
       </Form>
-      
+
       <Text type="secondary" style={{ display: 'block', fontSize: '12px', marginLeft: '44px' }}>
         Define el tamaño y la posición del recorte
       </Text>
@@ -150,4 +152,32 @@ const CropTool = ({ cropSettings, updateCropSettings, disabled }) => {
   );
 };
 
-export default CropTool; 
+CropTool.propTypes = {
+  cropSettings: PropTypes.shape({
+    enabled: PropTypes.bool,
+    cropType: PropTypes.oneOf([
+      'square',
+      'horizontal-16-9',
+      'horizontal-4-3',
+      'vertical-9-16',
+      'vertical-3-4',
+    ]),
+    position: PropTypes.oneOf([
+      'center',
+      'top-left',
+      'top-center',
+      'top-right',
+      'center-left',
+      'center-right',
+      'bottom-left',
+      'bottom-center',
+      'bottom-right',
+    ]),
+    width: PropTypes.number,
+    height: PropTypes.number,
+  }).isRequired,
+  updateCropSettings: PropTypes.func.isRequired,
+  disabled: PropTypes.bool,
+};
+
+export default CropTool;

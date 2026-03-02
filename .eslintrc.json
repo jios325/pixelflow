@@ -1,0 +1,24 @@
+{
+  "extends": ["react-app", "react-app/jest", "prettier"],
+  "rules": {
+    "no-console": "warn",
+    "no-unused-vars": ["warn", { "argsIgnorePattern": "^_", "varsIgnorePattern": "^_" }],
+    "no-debugger": "error",
+    "no-duplicate-imports": "error",
+    "no-var": "error",
+    "prefer-const": "warn",
+    "eqeqeq": ["error", "always"],
+    "no-nested-ternary": "warn",
+    "no-magic-numbers": ["warn", {
+      "ignore": [0, 1, -1, 2, 100],
+      "ignoreArrayIndexes": true,
+      "ignoreDefaultValues": true
+    }],
+    "react/jsx-no-duplicate-props": "error",
+    "react/jsx-key": "error",
+    "react/no-array-index-key": "warn",
+    "react/self-closing-comp": "warn",
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "warn"
+  }
+}

@@ -1,9 +1,10 @@
 import React from 'react';
-import { Card, Form, Switch, Select, Space, Divider, Typography } from 'antd';
+import PropTypes from 'prop-types';
+import { Card, Form, Switch, Select, Divider, Typography } from 'antd';
 import { ToolOutlined } from '@ant-design/icons';
-import { useBrand } from '../../context/BrandContext';
-import ResizeTool from './ResizeTool';
-import CropTool from './CropTool';
+import { useBrand } from '@/context/BrandContext';
+import ResizeTool from '@/components/Tools/ResizeTool';
+import CropTool from '@/components/Tools/CropTool';
 
 const { Option } = Select;
 const { Text } = Typography;
@@ -24,7 +25,7 @@ const ToolsPanel = ({
   changeFormat,
   updateResizeSettings,
   updateCropSettings,
-  disabled = false
+  disabled = false,
 }) => {
   // Acceder al contexto de marca
   const { brandSettings } = useBrand();
@@ -46,9 +47,17 @@ const ToolsPanel = ({
       style={{ borderRadius: brandSettings.theme.borderRadius, marginBottom: '16px' }}
     >
       <Form layout="vertical" disabled={disabled}>
-        <div style={{ marginBottom: '12px', background: '#f0f0f0', padding: '8px', borderRadius: '4px' }}>
+        <div
+          style={{
+            marginBottom: '12px',
+            background: '#f0f0f0',
+            padding: '8px',
+            borderRadius: '4px',
+          }}
+        >
           <Text type="secondary" style={{ fontSize: '12px' }}>
-            <strong>Orden de aplicación:</strong> Las herramientas se aplican en el siguiente orden: 1) Optimización, 2) Redimensionamiento, 3) Recorte, 4) Formato
+            <strong>Orden de aplicación:</strong> Las herramientas se aplican en el siguiente orden:
+            1) Optimización, 2) Redimensionamiento, 3) Recorte, 4) Formato
           </Text>
         </div>
         <Form.Item label="Optimizar imágenes">
@@ -56,7 +65,11 @@ const ToolsPanel = ({
             checked={processingSettings.optimize}
             onChange={toggleOptimize}
             disabled={disabled}
-            style={{ backgroundColor: processingSettings.optimize ? brandSettings.colors.primary : undefined }}
+            style={{
+              backgroundColor: processingSettings.optimize
+                ? brandSettings.colors.primary
+                : undefined,
+            }}
           />
           <Text type="secondary" style={{ marginLeft: '8px', fontSize: '12px' }}>
             Reduce el tamaño de archivo
@@ -95,6 +108,35 @@ const ToolsPanel = ({
       </Form>
     </Card>
   );
+};
+
+ToolsPanel.propTypes = {
+  processingSettings: PropTypes.shape({
+    optimize: PropTypes.bool,
+    format: PropTypes.string,
+    resize: PropTypes.shape({
+      enabled: PropTypes.bool,
+      width: PropTypes.number,
+      unit: PropTypes.oneOf(['px', '%']),
+      maintainAspectRatio: PropTypes.bool,
+    }),
+    crop: PropTypes.shape({
+      enabled: PropTypes.bool,
+      cropType: PropTypes.string,
+      position: PropTypes.string,
+      width: PropTypes.number,
+      height: PropTypes.number,
+    }),
+  }).isRequired,
+  toggleOptimize: PropTypes.func.isRequired,
+  changeFormat: PropTypes.func.isRequired,
+  updateResizeSettings: PropTypes.func.isRequired,
+  updateCropSettings: PropTypes.func.isRequired,
+  disabled: PropTypes.bool,
+};
+
+ToolsPanel.defaultProps = {
+  disabled: false,
 };
 
 export default ToolsPanel;

@@ -1,7 +1,8 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { List, Avatar, Button, Typography, Space, Tooltip } from 'antd';
 import { DeleteOutlined, FileImageOutlined } from '@ant-design/icons';
-import { formatFileSize } from '../../utils/fileValidation';
+import { formatFileSize } from '@/lib/fileValidation';
 
 const { Text } = Typography;
 
@@ -28,25 +29,20 @@ const UploadedImagesList = ({ images = [], onRemove }) => {
         <List.Item
           key={image.id}
           actions={[
-            <Tooltip title="Eliminar imagen">
-              <Button 
-                icon={<DeleteOutlined />} 
-                danger 
+            <Tooltip key="delete" title="Eliminar imagen">
+              <Button
+                icon={<DeleteOutlined />}
+                danger
                 size="small"
                 onClick={() => onRemove(image.id)}
                 shape="circle"
               />
-            </Tooltip>
+            </Tooltip>,
           ]}
         >
           <List.Item.Meta
             avatar={
-              <Avatar 
-                src={image.preview} 
-                shape="square" 
-                size={40}
-                icon={<FileImageOutlined />}
-              />
+              <Avatar src={image.preview} shape="square" size={40} icon={<FileImageOutlined />} />
             }
             title={
               <Tooltip title={image.name}>
@@ -65,13 +61,29 @@ const UploadedImagesList = ({ images = [], onRemove }) => {
           />
         </List.Item>
       )}
-      style={{ 
-        maxHeight: '300px', 
+      style={{
+        maxHeight: '300px',
         overflowY: 'auto',
-        overflowX: 'hidden'
+        overflowX: 'hidden',
       }}
     />
   );
 };
 
-export default UploadedImagesList; 
+UploadedImagesList.propTypes = {
+  images: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+      name: PropTypes.string.isRequired,
+      size: PropTypes.number,
+      preview: PropTypes.string,
+    })
+  ),
+  onRemove: PropTypes.func.isRequired,
+};
+
+UploadedImagesList.defaultProps = {
+  images: [],
+};
+
+export default UploadedImagesList;

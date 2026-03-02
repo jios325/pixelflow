@@ -1,7 +1,8 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Card, Form, Switch, Radio, Input, InputNumber, Space, Divider, Typography } from 'antd';
 import { EditOutlined } from '@ant-design/icons';
-import { useBrand } from '../../context/BrandContext';
+import { useBrand } from '@/context/BrandContext';
 
 const { Text } = Typography;
 
@@ -23,7 +24,7 @@ const RenamePanel = ({
   updateSequentialSettings,
   updateAddTextSettings,
   updateReplaceTextSettings,
-  disabled = false
+  disabled = false,
 }) => {
   // Acceder al contexto de marca
   const { brandSettings } = useBrand();
@@ -64,7 +65,7 @@ const RenamePanel = ({
             </Space>
           </Space>
         );
-      
+
       case 'addText':
         return (
           <Space direction="vertical" style={{ width: '100%' }}>
@@ -88,7 +89,7 @@ const RenamePanel = ({
             </Form.Item>
           </Space>
         );
-      
+
       case 'replaceText':
         return (
           <Space direction="vertical" style={{ width: '100%' }}>
@@ -110,7 +111,7 @@ const RenamePanel = ({
             </Form.Item>
           </Space>
         );
-      
+
       default:
         return null;
     }
@@ -133,7 +134,9 @@ const RenamePanel = ({
             checked={renameSettings.cleanText}
             onChange={toggleCleanText}
             disabled={disabled}
-            style={{ backgroundColor: renameSettings.cleanText ? brandSettings.colors.primary : undefined }}
+            style={{
+              backgroundColor: renameSettings.cleanText ? brandSettings.colors.primary : undefined,
+            }}
           />
           <Text type="secondary" style={{ marginLeft: '8px', fontSize: '12px' }}>
             Elimina caracteres especiales
@@ -158,6 +161,36 @@ const RenamePanel = ({
       </Form>
     </Card>
   );
+};
+
+RenamePanel.propTypes = {
+  renameSettings: PropTypes.shape({
+    cleanText: PropTypes.bool,
+    mode: PropTypes.oneOf(['sequential', 'addText', 'replaceText']),
+    sequential: PropTypes.shape({
+      prefix: PropTypes.string,
+      startNumber: PropTypes.number,
+      digits: PropTypes.number,
+    }),
+    addText: PropTypes.shape({
+      text: PropTypes.string,
+      position: PropTypes.oneOf(['prefix', 'suffix']),
+    }),
+    replaceText: PropTypes.shape({
+      search: PropTypes.string,
+      replace: PropTypes.string,
+    }),
+  }).isRequired,
+  toggleCleanText: PropTypes.func.isRequired,
+  changeRenameMode: PropTypes.func.isRequired,
+  updateSequentialSettings: PropTypes.func.isRequired,
+  updateAddTextSettings: PropTypes.func.isRequired,
+  updateReplaceTextSettings: PropTypes.func.isRequired,
+  disabled: PropTypes.bool,
+};
+
+RenamePanel.defaultProps = {
+  disabled: false,
 };
 
 export default RenamePanel;

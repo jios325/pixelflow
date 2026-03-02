@@ -1,7 +1,8 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Typography } from 'antd';
 import { PictureOutlined } from '@ant-design/icons';
-import brandConfig from '../../config/brandConfig';
+import brandConfig from '@/config/brandConfig';
 
 const { Title } = Typography;
 
@@ -33,26 +34,26 @@ const BrandLogo = ({ size = 'default' }) => {
         return 24;
     }
   };
-  
+
   // Si hay una URL de logo definida en la configuración
   if (brandConfig.logoUrl) {
     return (
       <div style={{ display: 'flex', alignItems: 'center' }}>
-        <img 
-          src={brandConfig.logoUrl} 
-          alt={brandConfig.appName} 
-          style={{ 
+        <img
+          src={brandConfig.logoUrl}
+          alt={brandConfig.appName}
+          style={{
             width: size === 'small' ? brandConfig.logoWidth / 1.5 : brandConfig.logoWidth,
             height: size === 'small' ? brandConfig.logoHeight / 1.5 : brandConfig.logoHeight,
             marginRight: '12px',
-            objectFit: 'contain'
-          }} 
+            objectFit: 'contain',
+          }}
         />
-        <Title 
-          level={getTitleLevel()} 
-          style={{ 
-            margin: 0, 
-            color: brandConfig.colors.primary 
+        <Title
+          level={getTitleLevel()}
+          style={{
+            margin: 0,
+            color: brandConfig.colors.primary,
           }}
         >
           {brandConfig.appName}
@@ -60,28 +61,36 @@ const BrandLogo = ({ size = 'default' }) => {
       </div>
     );
   }
-  
+
   // Si no hay logo, mostrar el icono predeterminado y el nombre de la app
   return (
     <div style={{ display: 'flex', alignItems: 'center' }}>
-      <PictureOutlined 
-        style={{ 
-          fontSize: getIconSize(), 
-          color: brandConfig.colors.primary, 
-          marginRight: '12px' 
-        }} 
+      <PictureOutlined
+        style={{
+          fontSize: getIconSize(),
+          color: brandConfig.colors.primary,
+          marginRight: '12px',
+        }}
       />
-      <Title 
-        level={getTitleLevel()} 
-        style={{ 
-          margin: 0, 
-          color: brandConfig.colors.primary 
+      <Title
+        level={getTitleLevel()}
+        style={{
+          margin: 0,
+          color: brandConfig.colors.primary,
         }}
       >
         {brandConfig.appName}
       </Title>
     </div>
   );
+};
+
+BrandLogo.propTypes = {
+  size: PropTypes.oneOf(['small', 'default', 'large']),
+};
+
+BrandLogo.defaultProps = {
+  size: 'default',
 };
 
 export default BrandLogo;

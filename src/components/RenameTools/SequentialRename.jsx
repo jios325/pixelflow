@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Form, Input, InputNumber, Select, Space } from 'antd';
 
 const { Option } = Select;
@@ -30,14 +31,14 @@ const SequentialRename = ({ sequentialSettings, updateSequentialSettings, disabl
 
   const positionOptions = [
     { value: 'prefix', label: 'Prefijo' },
-    { value: 'suffix', label: 'Sufijo' }
+    { value: 'suffix', label: 'Sufijo' },
   ];
 
   const separatorOptions = [
     { value: '_', label: 'Guión bajo (_)' },
     { value: '-', label: 'Guión (-)' },
     { value: '.', label: 'Punto (.)' },
-    { value: '', label: 'Ninguno' }
+    { value: '', label: 'Ninguno' },
   ];
 
   return (
@@ -71,7 +72,7 @@ const SequentialRename = ({ sequentialSettings, updateSequentialSettings, disabl
               disabled={disabled}
               style={{ width: '120px' }}
             >
-              {positionOptions.map(option => (
+              {positionOptions.map((option) => (
                 <Option key={option.value} value={option.value}>
                   {option.label}
                 </Option>
@@ -86,7 +87,7 @@ const SequentialRename = ({ sequentialSettings, updateSequentialSettings, disabl
               disabled={disabled}
               style={{ width: '120px' }}
             >
-              {separatorOptions.map(option => (
+              {separatorOptions.map((option) => (
                 <Option key={option.value} value={option.value}>
                   {option.label}
                 </Option>
@@ -120,4 +121,17 @@ const SequentialRename = ({ sequentialSettings, updateSequentialSettings, disabl
   );
 };
 
-export default SequentialRename; 
+SequentialRename.propTypes = {
+  sequentialSettings: PropTypes.shape({
+    prefix: PropTypes.string,
+    suffix: PropTypes.string,
+    position: PropTypes.oneOf(['prefix', 'suffix']),
+    separator: PropTypes.string,
+    digits: PropTypes.number,
+    startNumber: PropTypes.number,
+  }).isRequired,
+  updateSequentialSettings: PropTypes.func.isRequired,
+  disabled: PropTypes.bool,
+};
+
+export default SequentialRename;
