@@ -1,18 +1,6 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import {
-  Card,
-  Form,
-  Input,
-  Upload,
-  Button,
-  Row,
-  Col,
-  Space,
-  Divider,
-  Typography,
-  message,
-} from 'antd';
+import { App, Card, Form, Input, Upload, Button, Row, Col, Space, Divider, Typography } from 'antd';
 import { UploadOutlined, SettingOutlined, SaveOutlined, UndoOutlined } from '@ant-design/icons';
 import brandConfig from '@/config/brandConfig';
 import ColorPicker from '@/components/Common/ColorPicker';
@@ -27,6 +15,7 @@ const { Title } = Typography;
  * @param {Function} props.onClose - Función llamada al cerrar el panel
  */
 const BrandConfigPanel = ({ onSave }) => {
+  const { message } = App.useApp();
   // Estado para la configuración actual
   const [config, setConfig] = useState({ ...brandConfig });
   // Estado para la vista previa del logo
@@ -56,7 +45,7 @@ const BrandConfigPanel = ({ onSave }) => {
     // Validar que sea una imagen
     if (!file.type.startsWith('image/')) {
       message.error('Solo se permiten archivos de imagen');
-      return Upload.LIST_IGNORE;
+      return false;
     }
 
     // Leer el archivo y generar una URL de objeto para previsualización
@@ -100,7 +89,7 @@ const BrandConfigPanel = ({ onSave }) => {
           Configuración de marca
         </span>
       }
-      bordered
+      variant="bordered"
       style={{ borderRadius: config.theme.borderRadius, marginBottom: '16px' }}
     >
       <Form layout="vertical">

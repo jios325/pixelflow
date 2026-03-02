@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { Form, InputNumber, Switch, Typography, Space, Select } from 'antd';
+import { Button, Form, InputNumber, Switch, Typography, Space, Select } from 'antd';
 
 const { Text } = Typography;
 const { Option } = Select;
@@ -85,15 +85,17 @@ const ResizeTool = ({ resizeSettings, updateResizeSettings, disabled }) => {
               <Option value="%">Porcentaje</Option>
             </Select>
 
-            <InputNumber
-              min={1}
-              max={resizeSettings.unit === '%' ? 100 : 5000}
-              value={sizeValue}
-              onChange={handleSizeChange}
-              disabled={disabled}
-              style={{ width: '100px' }}
-              addonAfter={resizeSettings.unit || 'px'}
-            />
+            <Space.Compact>
+              <InputNumber
+                min={1}
+                max={resizeSettings.unit === '%' ? 100 : 5000}
+                value={sizeValue}
+                onChange={handleSizeChange}
+                disabled={disabled}
+                style={{ width: '100px' }}
+              />
+              <Button disabled>{resizeSettings.unit || 'px'}</Button>
+            </Space.Compact>
           </Space>
 
           {/* Switch para mantener proporción - siempre activado pero visible */}

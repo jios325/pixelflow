@@ -125,7 +125,7 @@ const RenamePanel = ({
           Renombrar
         </span>
       }
-      bordered
+      variant="bordered"
       style={{ borderRadius: brandSettings.theme.borderRadius, marginBottom: '16px' }}
     >
       <Form layout="vertical" disabled={disabled}>

@@ -45,11 +45,13 @@ export const getImagePreview = (file) => {
 export const formatFileSize = (bytes, decimals = 2) => {
   if (bytes === 0) return '0 Bytes';
 
+  const absBytes = Math.abs(bytes);
   const k = 1024;
   const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  const i = Math.floor(Math.log(absBytes) / Math.log(k));
+  const sign = bytes < 0 ? '-' : '';
 
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(decimals)) + ' ' + sizes[i];
+  return sign + parseFloat((absBytes / Math.pow(k, i)).toFixed(decimals)) + ' ' + sizes[i];
 };
 
 /**

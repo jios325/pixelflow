@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Layout, Row, Col, Card, ConfigProvider, Button, Drawer } from 'antd';
+import { Layout, Row, Col, Card, ConfigProvider, App as AntApp, Button, Drawer } from 'antd';
 import { FileImageOutlined, SettingOutlined } from '@ant-design/icons';
 
 // Componentes
@@ -20,7 +20,11 @@ import { useBrand } from '@/context/BrandContext';
 
 const { Header, Content, Footer } = Layout;
 
-function App() {
+/**
+ * Componente interior que usa los hooks de la app.
+ * Debe renderizarse como hijo de <AntApp> para que App.useApp() funcione.
+ */
+function AppContent() {
   // Estado para el panel de configuración de marca
   const [configVisible, setConfigVisible] = useState(false);
 
@@ -64,11 +68,7 @@ function App() {
   };
 
   return (
-    <ConfigProvider
-      theme={{
-        primaryColor: brandSettings.colors.primary,
-      }}
-    >
+    <>
       <Layout style={{ minHeight: '100vh' }}>
         <Header
           style={{
@@ -110,7 +110,7 @@ function App() {
                       Imágenes subidas
                     </span>
                   }
-                  bordered
+                  variant="bordered"
                   style={{ borderRadius: '8px', marginBottom: '16px' }}
                 >
                   <UploadedImagesList images={uploadedImages} onRemove={removeImage} />
@@ -165,7 +165,7 @@ function App() {
                       <DownloadButton images={renamedImages} loading={loading} />
                     </>
                   }
-                  bordered
+                  variant="bordered"
                   style={{ borderRadius: '8px' }}
                 >
                   <ProcessedImagesList images={renamedImages} loading={loading} />
@@ -192,6 +192,28 @@ function App() {
       >
         <BrandConfigPanel onSave={handleSaveBrandConfig} onClose={() => setConfigVisible(false)} />
       </Drawer>
+    </>
+  );
+}
+
+/**
+ * Componente raíz que envuelve con ConfigProvider y AntApp.
+ * AntApp debe estar por encima de cualquier componente que use App.useApp().
+ */
+function App() {
+  const { brandSettings } = useBrand();
+
+  return (
+    <ConfigProvider
+      theme={{
+        token: {
+          colorPrimary: brandSettings.colors.primary,
+        },
+      }}
+    >
+      <AntApp>
+        <AppContent />
+      </AntApp>
     </ConfigProvider>
   );
 }

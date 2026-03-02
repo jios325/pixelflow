@@ -4,6 +4,7 @@ import { Form, Switch, Typography, Space, Select } from 'antd';
 import { ScissorOutlined } from '@ant-design/icons';
 import logger from '@/lib/logger';
 
+const { Item: FormItem } = Form;
 const { Text } = Typography;
 const { Option } = Select;
 
@@ -113,8 +114,8 @@ const CropTool = ({ cropSettings, updateCropSettings, disabled }) => {
         </Text>
       </Space>
 
-      <Form layout="vertical" style={{ marginLeft: '44px', marginBottom: 0 }}>
-        <Form.Item label="Tipo de recorte" style={{ marginBottom: '8px' }}>
+      <div style={{ marginLeft: '44px', marginBottom: 0 }}>
+        <FormItem label="Tipo de recorte" style={{ marginBottom: '8px' }}>
           <Select
             value={cropSettings.cropType || 'square'}
             onChange={handleCropTypeChange}
@@ -127,9 +128,9 @@ const CropTool = ({ cropSettings, updateCropSettings, disabled }) => {
               </Option>
             ))}
           </Select>
-        </Form.Item>
+        </FormItem>
 
-        <Form.Item label="Posición de recorte" style={{ marginBottom: '4px' }}>
+        <FormItem label="Posición de recorte" style={{ marginBottom: '4px' }}>
           <Select
             value={cropSettings.position || 'center'}
             onChange={handleCropPositionChange}
@@ -142,8 +143,8 @@ const CropTool = ({ cropSettings, updateCropSettings, disabled }) => {
               </Option>
             ))}
           </Select>
-        </Form.Item>
-      </Form>
+        </FormItem>
+      </div>
 
       <Text type="secondary" style={{ display: 'block', fontSize: '12px', marginLeft: '44px' }}>
         Define el tamaño y la posición del recorte

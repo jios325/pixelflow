@@ -95,7 +95,7 @@ const ProcessedImagesList = ({ images = [], loading = false }) => {
                 />
               </div>
             }
-            bodyStyle={{ padding: '12px' }}
+            styles={{ body: { padding: '12px' } }}
           >
             <Tooltip title={image.newName || image.name}>
               <Text ellipsis style={{ display: 'block', fontWeight: 'bold' }}>
@@ -106,9 +106,13 @@ const ProcessedImagesList = ({ images = [], loading = false }) => {
               {image.formattedProcessedSize || formatFileSize(image.size)}
             </Text>
             {image.fileChanged && image.optimization && (
-              <Text type="success" style={{ fontSize: '12px', display: 'block' }}>
-                ↓ {image.optimization.reductionPercent}% (
-                {formatFileSize(image.optimization.reduction)})
+              <Text
+                type={image.optimization.reduction >= 0 ? 'success' : 'warning'}
+                style={{ fontSize: '12px', display: 'block' }}
+              >
+                {image.optimization.reduction >= 0 ? '↓' : '↑'}{' '}
+                {Math.abs(image.optimization.reductionPercent)}% (
+                {formatFileSize(Math.abs(image.optimization.reduction))})
               </Text>
             )}
 

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { message } from 'antd';
+import { App } from 'antd';
 import { getImagePreview } from '@/lib/fileValidation';
 import { createLowResPreview, estimateImageMemoryUsage } from '@/lib/memoryManager';
 import {
@@ -15,6 +15,7 @@ import logger from '@/lib/logger';
  * @returns {Object} - Estado y funciones para manejar imágenes
  */
 const useImageUpload = () => {
+  const { message } = App.useApp();
   // Estado para almacenar las imágenes cargadas
   const [uploadedImages, setUploadedImages] = useState([]);
   // Estado para indicar si está cargando

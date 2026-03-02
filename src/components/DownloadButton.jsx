@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { Button, message } from 'antd';
+import { App, Button } from 'antd';
 import { DownloadOutlined } from '@ant-design/icons';
 import JSZip from 'jszip';
 import { useBrand } from '@/context/BrandContext';
@@ -16,6 +16,7 @@ import logger from '@/lib/logger';
 const DownloadButton = ({ images = [], loading = false }) => {
   // Acceder al contexto de marca
   const { brandSettings } = useBrand();
+  const { message } = App.useApp();
   const [downloading, setDownloading] = useState(false);
 
   const handleDownload = async () => {

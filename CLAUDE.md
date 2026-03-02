@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-PixelFlow is a client-side React 19 single-page application for batch image processing (optimize, resize, crop, format convert, rename). Built with Next.js 16 (App Router, static export), Ant Design v4, and pure JavaScript (no TypeScript). All processing happens in the browser — there is no backend. The UI is in Spanish.
+PixelFlow is a client-side React 19 single-page application for batch image processing (optimize, resize, crop, format convert, rename). Built with Next.js 16 (App Router, static export), Ant Design v5, and pure JavaScript (no TypeScript). All processing happens in the browser — there is no backend. The UI is in Spanish.
 
 ## Commands
 
@@ -101,7 +101,7 @@ uploadedImages (useImageUpload)
 ### Key Libraries
 
 - `next` v16 — framework (App Router, static export, Turbopack)
-- `antd` v4 — UI components (imports legacy CSS `antd/dist/antd.min.css`)
+- `antd` v5 — UI components (CSS-in-JS, imports `antd/dist/reset.css` for CSS reset)
 - `browser-image-compression` — image optimization
 - `react-image-file-resizer` — image resizing
 - `jszip` + `file-saver` — ZIP creation and download for batch export
