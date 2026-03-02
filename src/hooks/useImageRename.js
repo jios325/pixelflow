@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { getBaseName, getFileExtension } from '../utils/fileValidation';
+import { getBaseName, getFileExtension } from '@/lib/fileValidation';
+import logger from '@/lib/logger';
 
 /**
  * Hook personalizado para renombrar imágenes
@@ -36,7 +37,7 @@ const useImageRename = (processedImages) => {
       return;
     }
 
-    console.log('Renombrando imágenes procesadas:', processedImages);
+    logger.log('Renombrando imágenes procesadas:', processedImages);
 
     // Función para limpiar texto (eliminar caracteres especiales)
     const cleanFileName = (name) => {
@@ -98,7 +99,7 @@ const useImageRename = (processedImages) => {
         extension = getFileExtension(img.newName || img.name);
       }
 
-      console.log(
+      logger.log(
         `Determinando extensión para ${img.name}: MIME=${img.processedFile?.type}, extensión=${extension}`
       );
 

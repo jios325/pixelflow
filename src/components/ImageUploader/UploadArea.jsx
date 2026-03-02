@@ -1,9 +1,9 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Upload, Typography, Alert } from 'antd';
 import { InboxOutlined, WarningOutlined } from '@ant-design/icons';
-import { isImageFile, validateFileSize } from '../../utils/fileValidation';
-import { useBrand } from '../../context/BrandContext';
-import { estimateImageMemoryUsage } from '../../utils/memoryManager';
+import { isImageFile, validateFileSize } from '@/lib/fileValidation';
+import { useBrand } from '@/context/BrandContext';
 
 const { Dragger } = Upload;
 const { Text, Title } = Typography;
@@ -70,7 +70,7 @@ const UploadArea = ({ onUpload, loading = false, maxCount = 50 }) => {
   };
 
   // Función personalizada para simular carga exitosa sin enviar al servidor
-  const customRequest = ({ file, onSuccess }) => {
+  const customRequest = ({ file: _file, onSuccess }) => {
     setTimeout(() => {
       onSuccess('ok', null);
     }, 0);
@@ -124,6 +124,17 @@ const UploadArea = ({ onUpload, loading = false, maxCount = 50 }) => {
       </Dragger>
     </>
   );
+};
+
+UploadArea.propTypes = {
+  onUpload: PropTypes.func.isRequired,
+  loading: PropTypes.bool,
+  maxCount: PropTypes.number,
+};
+
+UploadArea.defaultProps = {
+  loading: false,
+  maxCount: 50,
 };
 
 export default UploadArea;

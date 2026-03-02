@@ -4,14 +4,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-PixelFlow is a client-side React 19 single-page application for batch image processing (optimize, resize, crop, format convert, rename). Built with Create React App, Ant Design v4, and pure JavaScript (no TypeScript). All processing happens in the browser — there is no backend. The UI is in Spanish.
+PixelFlow is a client-side React 19 single-page application for batch image processing (optimize, resize, crop, format convert, rename). Built with Next.js 16 (App Router, static export), Ant Design v4, and pure JavaScript (no TypeScript). All processing happens in the browser — there is no backend. The UI is in Spanish.
 
 ## Commands
 
-- **Dev server:** `npm start` (localhost:3000)
-- **Production build:** `npm build`
-- **Tests:** `npm test` (Jest via react-scripts; `npm test -- --watchAll=false` for single run)
-- **Run single test:** `npm test -- --testPathPattern=<pattern>`
+- **Dev server:** `npm run dev` (localhost:3000, Turbopack)
+- **Production build:** `npm run build` (static export to `build/`)
+- **Start:** `npm start` (serves production build)
 - **Lint:** `npm run lint` (ESLint with strict React rules)
 - **Lint fix:** `npm run lint:fix`
 - **Format check:** `npm run format:check` (Prettier)
@@ -28,8 +27,51 @@ PixelFlow is a client-side React 19 single-page application for batch image proc
 - **ESLint:** `.eslintrc.json` extiende `react-app` + `prettier`. Reglas: warn en console, no unused vars, eqeqeq, prefer-const, no-magic-numbers, hooks rules.
 - **Prettier:** `.prettierrc` — single quotes, semicolons, 2 spaces, trailing commas ES5, 100 char width.
 - **Git hooks:** Husky pre-commit ejecuta lint-staged (ESLint fix + Prettier write en archivos staged).
+- **PropTypes:** Todos los componentes en `src/components/` tienen validación de props con `prop-types`.
+- **Logger:** `src/lib/logger.js` — logger condicional que solo imprime en desarrollo. Usar `logger.log/warn/error/info/debug` en vez de `console.*`.
+- **Constants:** `src/lib/constants.js` — magic numbers extraídos a constantes con nombre (thresholds, batch sizes, quality values, dimensions).
+
+## Import Aliases
+
+El proyecto usa `@/` como alias para `./src/` (configurado en `jsconfig.json`). Next.js lo resuelve automáticamente.
+
+```js
+// Correcto
+import UploadArea from '@/components/ImageUploader/UploadArea';
+import logger from '@/lib/logger';
+import { useBrand } from '@/context/BrandContext';
+
+// Incorrecto — no usar paths relativos con ../
+import UploadArea from '../../components/ImageUploader/UploadArea';
+```
+
+Excepciones: imports dentro del mismo directorio (`./sibling`) son aceptables en `src/lib/`.
 
 ## Architecture
+
+### Folder Structure
+
+```
+app/                          # Next.js App Router (routing layer)
+  layout.jsx                  # Root layout (metadata, global CSS)
+  [[...slug]]/
+    page.jsx                  # Catch-all route (static export)
+    client.jsx                # 'use client' wrapper (BrandProvider + dynamic App)
+src/                          # Application source code
+  App.jsx                     # Main app component
+  index.css                   # Global styles
+  components/
+    Common/                   # Shared UI (BrandConfigPanel, BrandLogo, ColorPicker)
+    DownloadButton.jsx
+    ImageProcessor/           # ProcessedImagesList
+    ImageUploader/            # UploadArea, UploadedImagesList
+    RenameTools/              # RenamePanel, AddTextRename, ReplaceTextRename, SequentialRename
+    Tools/                    # ToolsPanel, ResizeTool, CropTool
+  config/                     # App configuration (brandConfig)
+  context/                    # React contexts (BrandContext)
+  hooks/                      # Custom hooks (useImageUpload, useImageProcessor, useImageRename)
+  lib/                        # Utilities (logger, constants, fileValidation, imageProcessing, memoryManager)
+```
 
 ### State Management
 
@@ -58,20 +100,19 @@ uploadedImages (useImageUpload)
 
 ### Key Libraries
 
+- `next` v16 — framework (App Router, static export, Turbopack)
 - `antd` v4 — UI components (imports legacy CSS `antd/dist/antd.min.css`)
 - `browser-image-compression` — image optimization
 - `react-image-file-resizer` — image resizing
 - `jszip` + `file-saver` — ZIP creation and download for batch export
+- `prop-types` — runtime prop validation
 
 ### Batch Processing
 
-Upload batches: 3 images at a time. Download batches: 5 at a time. Memory management utility at `src/utils/memoryManager.js` handles low-res previews, memory estimation, and URL.revokeObjectURL cleanup.
+Upload batches: 3 images at a time. Download batches: 5 at a time. Constants defined in `src/lib/constants.js`. Memory management utility at `src/lib/memoryManager.js` handles low-res previews, memory estimation, and URL.revokeObjectURL cleanup.
 
 ## Caveats
 
-- Two App files exist: `App.js` (unused placeholder) and `App.jsx` (real entry). `index.js` imports `App.jsx`.
-- `theme.js` is defined but never imported/used.
-- `FormatTool.jsx`, `OptimizeTool.jsx`, `RenameOptions.jsx` exist as standalone components but are NOT used by their parent containers — the parents implement inline versions instead.
-- Some utility functions are duplicated across `fileHelpers.js` and `fileValidation.js`.
-- `pica` is listed as a dependency but is not imported anywhere in source code.
 - Primary brand color is violet (`#a855f7`).
+- The app runs as a SPA via Next.js static export (`output: 'export'` in `next.config.mjs`). The catch-all route `app/[[...slug]]/` renders the client-side App component with SSR disabled.
+- Turbopack root is set to `__dirname` in `next.config.mjs` to avoid lockfile detection warnings.

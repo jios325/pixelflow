@@ -1,7 +1,8 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { List, Avatar, Button, Typography, Space, Tooltip } from 'antd';
 import { DeleteOutlined, FileImageOutlined } from '@ant-design/icons';
-import { formatFileSize } from '../../utils/fileValidation';
+import { formatFileSize } from '@/lib/fileValidation';
 
 const { Text } = Typography;
 
@@ -67,6 +68,22 @@ const UploadedImagesList = ({ images = [], onRemove }) => {
       }}
     />
   );
+};
+
+UploadedImagesList.propTypes = {
+  images: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+      name: PropTypes.string.isRequired,
+      size: PropTypes.number,
+      preview: PropTypes.string,
+    })
+  ),
+  onRemove: PropTypes.func.isRequired,
+};
+
+UploadedImagesList.defaultProps = {
+  images: [],
 };
 
 export default UploadedImagesList;

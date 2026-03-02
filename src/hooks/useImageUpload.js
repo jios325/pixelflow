@@ -1,7 +1,14 @@
 import { useState } from 'react';
 import { message } from 'antd';
-import { getImagePreview } from '../utils/fileValidation';
-import { createLowResPreview, estimateImageMemoryUsage } from '../utils/memoryManager';
+import { getImagePreview } from '@/lib/fileValidation';
+import { createLowResPreview, estimateImageMemoryUsage } from '@/lib/memoryManager';
+import {
+  UPLOAD_BATCH_SIZE,
+  UPLOAD_PROGRESS_THRESHOLD,
+  LARGE_IMAGE_THRESHOLD,
+  MEMORY_WARNING_THRESHOLD,
+} from '@/lib/constants';
+import logger from '@/lib/logger';
 
 /**
  * Hook personalizado para manejar la carga de imágenes
@@ -23,9 +30,7 @@ const useImageUpload = () => {
     setLoading(true);
 
     try {
-      // Constantes para el procesamiento por lotes
-      const BATCH_SIZE = 3; // Procesar 3 imágenes a la vez
-      const TOTAL_BATCHES = Math.ceil(files.length / BATCH_SIZE);
+      const TOTAL_BATCHES = Math.ceil(files.length / UPLOAD_BATCH_SIZE);
 
       // Array para almacenar las nuevas imágenes procesadas
       const newImages = [];
@@ -33,12 +38,12 @@ const useImageUpload = () => {
       // Procesar imágenes en lotes para evitar problemas de memoria
       for (let batchIndex = 0; batchIndex < TOTAL_BATCHES; batchIndex++) {
         // Calcular el rango del lote actual
-        const startIndex = batchIndex * BATCH_SIZE;
-        const endIndex = Math.min(startIndex + BATCH_SIZE, files.length);
+        const startIndex = batchIndex * UPLOAD_BATCH_SIZE;
+        const endIndex = Math.min(startIndex + UPLOAD_BATCH_SIZE, files.length);
         const currentBatch = files.slice(startIndex, endIndex);
 
         // Mostrar progreso para archivos grandes
-        if (files.length > 5) {
+        if (files.length > UPLOAD_PROGRESS_THRESHOLD) {
           message.loading({
             content: `Procesando imágenes ${startIndex + 1}-${endIndex} de ${files.length}...`,
             key: 'uploadProgress',
@@ -54,7 +59,7 @@ const useImageUpload = () => {
               const id = `img-${Date.now()}-${startIndex + idx}`;
 
               // Comprobar si es una imagen grande (más de 10MB)
-              const isLargeImage = file.size > 10 * 1024 * 1024;
+              const isLargeImage = file.size > LARGE_IMAGE_THRESHOLD;
 
               // Crear vista previa adecuada según el tamaño
               let preview;
@@ -69,12 +74,10 @@ const useImageUpload = () => {
 
               // Estimar el uso de memoria para alertar al usuario si es necesario
               const estimatedMemory = estimateImageMemoryUsage(file);
-              const memoryWarning = estimatedMemory > 500 * 1024 * 1024; // Advertir si usa más de 500MB
+              const memoryWarning = estimatedMemory > MEMORY_WARNING_THRESHOLD;
 
               if (memoryWarning) {
-                console.warn(
-                  `Imagen grande detectada: ${file.name}. Puede afectar al rendimiento.`
-                );
+                logger.warn(`Imagen grande detectada: ${file.name}. Puede afectar al rendimiento.`);
               }
 
               // Crear objeto de imagen para el estado
@@ -89,7 +92,7 @@ const useImageUpload = () => {
                 isLargeImage, // Marcar imágenes grandes para tratamiento especial
               };
             } catch (error) {
-              console.error(`Error al procesar la imagen ${file.name}:`, error);
+              logger.error(`Error al procesar la imagen ${file.name}:`, error);
               return null; // Devolver null para las imágenes con error
             }
           })
@@ -113,7 +116,7 @@ const useImageUpload = () => {
         key: 'uploadProgress',
       });
     } catch (error) {
-      console.error('Error al cargar imágenes:', error);
+      logger.error('Error al cargar imágenes:', error);
       message.error('Error al cargar las imágenes');
     } finally {
       setLoading(false);
@@ -134,7 +137,7 @@ const useImageUpload = () => {
       try {
         URL.revokeObjectURL(imageToRemove.preview);
       } catch (error) {
-        console.error('Error al liberar URL de vista previa:', error);
+        logger.error('Error al liberar URL de vista previa:', error);
       }
     }
 
@@ -152,7 +155,7 @@ const useImageUpload = () => {
         try {
           URL.revokeObjectURL(img.preview);
         } catch (error) {
-          console.error('Error al liberar URL de vista previa:', error);
+          logger.error('Error al liberar URL de vista previa:', error);
         }
       }
     });

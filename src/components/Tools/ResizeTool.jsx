@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import { Form, InputNumber, Switch, Typography, Space, Select } from 'antd';
-import { ExpandOutlined } from '@ant-design/icons';
 
 const { Text } = Typography;
 const { Option } = Select;
@@ -114,6 +114,17 @@ const ResizeTool = ({ resizeSettings, updateResizeSettings, disabled }) => {
       )}
     </div>
   );
+};
+
+ResizeTool.propTypes = {
+  resizeSettings: PropTypes.shape({
+    enabled: PropTypes.bool,
+    width: PropTypes.number,
+    unit: PropTypes.oneOf(['px', '%']),
+    maintainAspectRatio: PropTypes.bool,
+  }).isRequired,
+  updateResizeSettings: PropTypes.func.isRequired,
+  disabled: PropTypes.bool,
 };
 
 export default ResizeTool;

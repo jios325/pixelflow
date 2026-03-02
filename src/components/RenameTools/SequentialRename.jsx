@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Form, Input, InputNumber, Select, Space } from 'antd';
 
 const { Option } = Select;
@@ -118,6 +119,19 @@ const SequentialRename = ({ sequentialSettings, updateSequentialSettings, disabl
       </Form>
     </div>
   );
+};
+
+SequentialRename.propTypes = {
+  sequentialSettings: PropTypes.shape({
+    prefix: PropTypes.string,
+    suffix: PropTypes.string,
+    position: PropTypes.oneOf(['prefix', 'suffix']),
+    separator: PropTypes.string,
+    digits: PropTypes.number,
+    startNumber: PropTypes.number,
+  }).isRequired,
+  updateSequentialSettings: PropTypes.func.isRequired,
+  disabled: PropTypes.bool,
 };
 
 export default SequentialRename;
