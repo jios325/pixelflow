@@ -12,30 +12,28 @@
     "browser-image-compression": "^2.0.2",
     "file-saver": "^2.0.5",
     "jszip": "^3.10.1",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "react-image-file-resizer": "^0.4.8",
-    "react-scripts": "5.0.1",
-    "web-vitals": "^2.1.4"
+    "next": "^16.1.6",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "react-image-file-resizer": "^0.4.8"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "lint": "eslint src/ --ext .js,.jsx",
-    "lint:fix": "eslint src/ --ext .js,.jsx --fix",
-    "format": "prettier --write 'src/**/*.{js,jsx,css,json}'",
-    "format:check": "prettier --check 'src/**/*.{js,jsx,css,json}'",
-    "audit:code": "eslint src/ --ext .js,.jsx --format stylish && prettier --check 'src/**/*.{js,jsx,css,json}'",
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint src/ app/ --ext .js,.jsx",
+    "lint:fix": "eslint src/ app/ --ext .js,.jsx --fix",
+    "format": "prettier --write '{src,app}/**/*.{js,jsx,css,json}'",
+    "format:check": "prettier --check '{src,app}/**/*.{js,jsx,css,json}'",
+    "audit:code": "eslint src/ app/ --ext .js,.jsx --format stylish && prettier --check '{src,app}/**/*.{js,jsx,css,json}'",
     "prepare": "husky"
   },
   "lint-staged": {
-    "src/**/*.{js,jsx}": [
+    "{src,app}/**/*.{js,jsx}": [
       "eslint --fix",
       "prettier --write"
     ],
-    "src/**/*.{css,json}": [
+    "{src,app}/**/*.{css,json}": [
       "prettier --write"
     ]
   },
@@ -52,7 +50,9 @@
     ]
   },
   "devDependencies": {
+    "eslint": "^8.57.1",
     "eslint-config-prettier": "^10.1.8",
+    "eslint-config-react-app": "^7.0.1",
     "husky": "^9.1.7",
     "lint-staged": "^16.3.1",
     "prettier": "^3.8.1"
